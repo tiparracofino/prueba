@@ -235,11 +235,11 @@ function saveCat() {
 // LÓGICA: Algoritmo Edad del Dinero (FIFO)
 function calculateAgeOfMoney() {
   let inflows = S.txs.filter(t => t.type === 'income')
-                   .map(t => ({...t})) 
-                   .sort((a, b) => new Date(a.date) - new Date(b.date));
+                  .map(t => ({...t})) 
+                  .sort((a, b) => new Date(a.date) - new Date(b.date));
   
   let outflows = S.txs.filter(t => t.type === 'expense')
-                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+                   .sort((a, b) => new Date(a.date) - new Date(b.date));
   
   let start = 0; 
   let ages =;
