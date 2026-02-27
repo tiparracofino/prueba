@@ -206,7 +206,7 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; font-
     </div>
     <div id="pills">
       <div class="pill"><span class="pill-lbl">Ingresos</span><span class="pill-val g" id="p-income">€0</span></div>
-      <div class="pill"><span class="pill-lbl">Asignado</span><span class="pill-val a" id="p-assigned">€0</span></div>
+      <div class="pill"><span class="pill-lbl">Saldo Total</span><span class="pill-val a" id="p-assigned">€0</span></div>
       <div class="pill"><span class="pill-lbl">Gastado</span><span class="pill-val r" id="p-spent">€0</span></div>
     </div>
   </div>
@@ -486,18 +486,6 @@ function getMonthData(mk) {
   return S.monthData[mk];
 }
 
-// Calcula "Para Asignar": (Total Ingresos Históricos) - (Total Asignado Histórico)
-function calcToAssign() {
-  const totalIncome = S.txs.filter(t => t.type === 'income').reduce((s,t) => s + t.amt, 0);
-  let totalAssigned = 0;
-  if (S.monthData) {
-    Object.values(S.monthData).forEach(md => {
-      Object.values(md.assignments || {}).forEach(v => totalAssigned += v);
-    });
-  }
-  return totalIncome - totalAssigned;
-}
-
 // Calcula el "Disponible" acumulado de una categoría hasta el mes actual
 // Disponible = (Suma de todo lo asignado históricamente) 
 //            - (Suma de todo lo gastado históricamente)
@@ -641,38 +629,58 @@ function chMonth(d) {
 
 // ── CÁLCULOS GENERALES (Banner y Pills) ──
 function updateHeaderStats(mk) {
-  // Ingresos este mes
+  // 1. Ingresos de ESTE mes (para la pastilla izquierda)
   const tIncMes = S.txs
     .filter(t => t.month === mk && t.type === 'income')
     .reduce((s, t) => s + t.amt, 0);
 
-  // Asignado este mes
-  let assignedMes = 0;
-  const md = getMonthData(mk);
-  if(md.assignments) Object.values(md.assignments).forEach(v => assignedMes += v);
-
-  // Gastado este mes (Total)
+  // 2. Gastado de ESTE mes (para la pastilla derecha)
   const totalSpentMes = S.txs
     .filter(t => t.month === mk && t.type === 'expense')
     .reduce((s, t) => s + t.amt, 0);
 
-  // Para Asignar (Global)
-  const toAssign = calcToAssign();
+  // 3. NUEVO: SALDO TOTAL REAL (Dinero en cuenta hasta hoy)
+  // (Todos los ingresos de la historia hasta este mes) - (Todos los gastos de la historia hasta este mes)
+  const allInc = S.txs.filter(t => t.type === 'income' && t.month <= mk).reduce((s,t) => s + t.amt, 0);
+  const allExp = S.txs.filter(t => t.type === 'expense' && t.month <= mk).reduce((s,t) => s + t.amt, 0);
+  const saldoReal = allInc - allExp;
 
-  // Actualizar DOM
-  const pi = document.getElementById('p-income'); pi.textContent = ef(tIncMes);
-  const pa = document.getElementById('p-assigned'); pa.textContent = ef(assignedMes);
-  const ps = document.getElementById('p-spent'); ps.textContent = ef(totalSpentMes);
+  // 4. Para Asignar CORREGIDO: (Ingresos hasta hoy) - (Asignado hasta hoy)
+  let totalAssignedHistory = 0;
+  if (S.monthData) {
+     Object.keys(S.monthData).forEach(mKey => {
+        // Solo cuenta asignaciones del pasado y presente, no futuro
+        if(mKey <= mk) {
+          Object.values(S.monthData[mKey].assignments || {}).forEach(v => totalAssignedHistory += v);
+        }
+     });
+  }
+  // Usamos allInc (ingresos hasta hoy) en lugar de ingresos totales
+  const toAssign = allInc - totalAssignedHistory;
+
+  // ── ACTUALIZAR EL HTML ──
+  
+  // Pastilla Izquierda: Ingresos del mes
+  const pi = document.getElementById('p-income'); 
+  pi.textContent = ef(tIncMes);
+
+  // Pastilla Central: SALDO TOTAL
+  const pa = document.getElementById('p-assigned'); 
+  pa.textContent = ef(saldoReal);
+  pa.className = saldoReal >= 0 ? 'pill-val g' : 'pill-val r'; 
+
+  // Pastilla Derecha: Gastado del mes
+  const ps = document.getElementById('p-spent'); 
+  ps.textContent = ef(totalSpentMes);
   ps.className = totalSpentMes > 0 ? 'pill-val r' : 'pill-val';
 
+  // Banner grande: Para asignar
   const tael = document.getElementById('to-assign');
   tael.textContent = efs(toAssign);
   tael.className = toAssign < 0 ? 'deficit' : '';
 
-  // Edad del dinero (Simulada)
-  const totalSpentAll = S.txs.filter(t=>t.type==='expense').reduce((s,t)=>s+t.amt,0);
-  const totalIncAll = S.txs.filter(t=>t.type==='income').reduce((s,t)=>s+t.amt,0);
-  const age = totalSpentAll > 0 ? Math.min(Math.round(totalIncAll/totalSpentAll * 30), 99) : 0;
+  // Edad del dinero
+  const age = allExp > 0 ? Math.min(Math.round(allInc/allExp * 30), 99) : 0;
   document.getElementById('age-num').textContent = age;
 }
 
@@ -718,7 +726,7 @@ function renderBudget() {
       const avail = calcCatAvailable(cat.id, mk);
       const spent = spentThisMonth[cat.id] || 0;
       
-      // Barra de progreso: ¿cuánto se ha gastado de lo asignado este mes?
+      // Barra de progreso
       const pct = assigned > 0 ? Math.min(spent / assigned * 100, 100) : (spent>0?100:0);
       const isOver = avail < 0;
 
