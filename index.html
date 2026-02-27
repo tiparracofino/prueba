@@ -1027,6 +1027,7 @@ function openSh(id) {
     editingGoalId = null;
     document.getElementById('goal-sh-title').textContent = 'Nueva meta';
     document.getElementById('goal-save-btn').textContent = 'Crear meta';
+    // OCULTAR EL BOTÓN AL CREAR NUEVA
     document.getElementById('goal-del-btn').style.display = 'none';
     
     const sel = document.getElementById('g-cat-link');
@@ -1187,6 +1188,7 @@ function openEditGoal(id) {
   
   document.getElementById('goal-sh-title').textContent = 'Editar meta';
   document.getElementById('goal-save-btn').textContent = 'Guardar cambios';
+  // MOSTRAR EL BOTÓN AL EDITAR
   document.getElementById('goal-del-btn').style.display = 'block';
 
   document.getElementById('g-emo').value = g.emoji;
@@ -1199,8 +1201,16 @@ function openEditGoal(id) {
 
 function deleteGoal() {
   if (!editingGoalId) return;
-  S.goals = S.goals.filter(g=>g.id!==editingGoalId); editingGoalId=null;
-  save(); closeSh('goal'); renderGoals(); showToast('Meta eliminada');
+  
+  // CONFIRMACIÓN DE SEGURIDAD AÑADIDA
+  if (!confirm('¿Estás seguro de que quieres eliminar esta meta? Esta acción no se puede deshacer.')) return;
+
+  S.goals = S.goals.filter(g=>g.id!==editingGoalId); 
+  editingGoalId = null;
+  save(); 
+  closeSh('goal'); 
+  renderGoals(); 
+  showToast('Meta eliminada');
 }
 
 // ── INIT ──
@@ -1211,7 +1221,7 @@ function deleteGoal() {
 
 checkRecurring();
 updMonth();
-fullRender(); // Corrected function call to start app
+fullRender(); 
 
 </script>
 </body>
