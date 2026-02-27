@@ -396,11 +396,17 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; font-
       </div>
     </div>
     <div class="fg"><label class="flbl">Nombre</label><input type="text" class="finp" id="g-nm" placeholder="ej. Fondo de emergencia"></div>
+    
+    <div class="fg">
+      <label class="flbl">Vinculada a la categoría...</label>
+      <select class="finp" id="g-cat-link"></select>
+      <div style="font-size:11px;color:#888;margin-top:4px">El progreso será el dinero disponible en esta categoría.</div>
+    </div>
+
     <div class="f2">
       <div class="fg"><label class="flbl">Objetivo €</label><input type="number" class="finp" id="g-tgt" placeholder="5000"></div>
-      <div class="fg"><label class="flbl">Ahorrado €</label><input type="number" class="finp" id="g-sv" placeholder="0"></div>
+      <div class="fg"><label class="flbl">Fecha objetivo</label><input type="month" class="finp" id="g-dt"></div>
     </div>
-    <div class="fg"><label class="flbl">Fecha objetivo</label><input type="month" class="finp" id="g-dt"></div>
     <button class="sbtn" id="goal-save-btn" onclick="saveGoal()">Crear meta</button>
     <button class="sbtn danger" id="goal-del-btn" onclick="deleteGoal()" style="display:none">Eliminar meta</button>
   </div>
@@ -415,7 +421,7 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; font-
       <br><br>
       El número grande arriba ("Para asignar") es:
       <div style="background:#e6e2d8;padding:10px;border-radius:8px;margin-top:10px;font-family:'Cormorant Garamond';font-size:18px;text-align:center">
-        (Total Ingresos Reales) - (Total Asignado a Categorías)
+        (Ingresos hasta hoy) - (Asignado hasta hoy)
       </div>
     </div>
     <button class="sbtn" onclick="closeSh('income'); openSh('tx'); setType('income');">➜ Añadir ingreso ahora</button>
@@ -955,6 +961,7 @@ function showPanel(id) {
   document.getElementById('fab').style.display = (id==='tx'||id==='budget') ? 'flex' : 'none';
   if(id==='tx') renderTx();
   if(id==='rep') renderRep();
+  if(id==='goals') renderGoals();
 }
 
 function openSh(id) {
@@ -977,6 +984,27 @@ function openSh(id) {
     document.getElementById('c-nm').value=''; document.getElementById('c-emo').value=''; document.getElementById('c-newg').value='';
   }
   if (id==='recurring') renderRecSheet();
+  if (id === 'goal') {
+    editingGoalId = null;
+    document.getElementById('goal-sh-title').textContent = 'Nueva meta';
+    document.getElementById('goal-save-btn').textContent = 'Crear meta';
+    document.getElementById('goal-del-btn').style.display = 'none';
+    
+    // Llenar selector cats
+    const sel = document.getElementById('g-cat-link');
+    sel.innerHTML = '<option value="">-- Selecciona categoría --</option>';
+    S.groups.forEach(g => {
+      const og = document.createElement('optgroup'); og.label = g.name;
+      g.cats.forEach(c => {
+        const o = document.createElement('option'); 
+        o.value = c.id; o.textContent = c.emoji + ' ' + c.name; 
+        og.appendChild(o); 
+      });
+      sel.appendChild(og);
+    });
+
+    ['g-emo','g-nm','g-tgt','g-dt'].forEach(i => document.getElementById(i).value = '');
+  }
   document.getElementById('ov-'+id).classList.add('open');
 }
 
@@ -1028,10 +1056,9 @@ function delRec(id) {
   save(); renderRecSheet(); showToast('Recurrente eliminada');
 }
 
-// ── INFORMES Y METAS ──
+// ── INFORMES Y METAS (CON LÓGICA REAL) ──
 function renderRep() {
   const body = document.getElementById('rep-body');
-  // Simple stats por ahora
   const mk = monthKey(currentMonth);
   const inc = S.txs.filter(t=>t.month===mk && t.type==='income').reduce((s,t)=>s+t.amt,0);
   const exp = S.txs.filter(t=>t.month===mk && t.type==='expense').reduce((s,t)=>s+t.amt,0);
@@ -1045,18 +1072,101 @@ function renderRep() {
       </div>
     </div>`;
 }
+
 function renderGoals() {
   const body = document.getElementById('g-body');
-  if(!S.goals.length) { body.innerHTML='<div style="text-align:center;color:#aaa;padding:20px">No hay metas</div>'; return; }
+  if(!S.goals.length) { 
+    body.innerHTML='<div style="text-align:center;color:#aaa;padding:20px">No hay metas.<br>Crea una y vincúlala a una categoría.</div>'; 
+    return; 
+  }
+  
+  const mk = monthKey(currentMonth); // Para saber el saldo a día de hoy
+
   body.innerHTML = S.goals.map(g => {
-    const pct = Math.min(g.saved/g.target*100, 100);
-    return `<div class="goal-card" onclick="openSh('goal')">
+    // Buscar saldo real de la categoría vinculada
+    let currentSaved = 0;
+    if (g.catId) {
+      currentSaved = calcCatAvailable(g.catId, mk);
+    }
+    
+    const pct = Math.min(Math.max(currentSaved / g.target * 100, 0), 100);
+    const today = new Date();
+    const targetDate = new Date(g.date + '-01');
+    const monthsLeft = (targetDate.getFullYear() - today.getFullYear()) * 12 + (targetDate.getMonth() - today.getMonth());
+    const remaining = g.target - currentSaved;
+    const monthly = (remaining > 0 && monthsLeft > 0) ? (remaining / monthsLeft) : 0;
+
+    return `<div class="goal-card" onclick="openEditGoal('${g.id}')">
       <div class="goal-stripe ${g.type}"></div>
-      <div class="goal-name">${g.emoji} ${g.name}</div>
+      <div class="goal-top2">
+        <span class="goal-emo">${g.emoji}</span>
+        <span class="gbadge ${g.type}">${g.type==='save'?'Ahorro':(g.type==='debt'?'Deuda':'Gasto')}</span>
+      </div>
+      <div class="goal-name">${g.name}</div>
+      <div class="goal-sub2">Objetivo: ${g.date} ${monthly > 0 ? '· Ahorrar '+ef(monthly)+'/mes' : ''}</div>
       <div class="goal-trk"><div class="goal-fill ${g.type}" style="width:${pct}%"></div></div>
-      <div class="goal-stats2"><span class="goal-sv">${ef(g.saved)}</span><span class="goal-tgt">/ ${ef(g.target)}</span></div>
-    </div>`
+      <div class="goal-stats2">
+        <div>
+           <span class="goal-sv">${ef(currentSaved)}</span>
+           <span class="goal-tgt">de ${ef(g.target)}</span>
+        </div>
+      </div>
+    </div>`;
   }).join('');
+}
+
+function saveGoal() {
+  const name = document.getElementById('g-nm').value.trim();
+  const target = parseFloat(document.getElementById('g-tgt').value) || 0;
+  const catId = document.getElementById('g-cat-link').value;
+  
+  if (!name || target <= 0 || !catId) { showToast('Nombre, categoría y objetivo obligatorios'); return; }
+  
+  const data = { 
+    emoji: document.getElementById('g-emo').value || '🎯', 
+    name, 
+    type: document.getElementById('g-type').value, 
+    target, 
+    catId, // Guardamos el ID de la categoría, no el dinero
+    date: document.getElementById('g-dt').value || '2026-12' 
+  };
+
+  if (editingGoalId) { 
+    const g = S.goals.find(g => g.id === editingGoalId); 
+    if(g) Object.assign(g, data); 
+    editingGoalId = null; 
+  } else { 
+    S.goals.push({ id: uid(), ...data }); 
+  }
+  
+  save(); closeSh('goal'); renderGoals(); showToast('Meta guardada y vinculada ✓');
+}
+
+function openEditGoal(id) {
+  const g = S.goals.find(g => g.id === id); if (!g) return;
+  editingGoalId = id;
+  
+  // Abrimos el sheet
+  openSh('goal'); 
+  
+  // Sobrescribimos títulos
+  document.getElementById('goal-sh-title').textContent = 'Editar meta';
+  document.getElementById('goal-save-btn').textContent = 'Guardar cambios';
+  document.getElementById('goal-del-btn').style.display = 'block';
+
+  // Rellenamos datos
+  document.getElementById('g-emo').value = g.emoji;
+  document.getElementById('g-type').value = g.type;
+  document.getElementById('g-nm').value = g.name;
+  document.getElementById('g-tgt').value = g.target;
+  document.getElementById('g-dt').value = g.date;
+  document.getElementById('g-cat-link').value = g.catId || '';
+}
+
+function deleteGoal() {
+  if (!editingGoalId) return;
+  S.goals = S.goals.filter(g=>g.id!==editingGoalId); editingGoalId=null;
+  save(); closeSh('goal'); renderGoals(); showToast('Meta eliminada');
 }
 
 // ── INIT ──
