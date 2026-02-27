@@ -25,7 +25,7 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
 .pill { background:rgba(255,255,255,.10); border-radius:10px; padding:10px 8px; text-align:center; }
 .pill-lbl { font-size:9px; text-transform:uppercase; color:rgba(255,255,255,.45); }
 .pill-val { font-family:'Cormorant Garamond',serif; font-size:18px; color:#fff; }
-.pill-val.g { color:#8fcc7a; } .pill-val.r { color:#d47a7a; }
+.pill-val.g { color:#8fcc7a; }.pill-val.r { color:#d47a7a; }
 
 /* BANNER */
 #banner { background-color:#4a6741; display:flex; align-items:center; justify-content:space-between; padding:16px 18px; color:#fff; }
@@ -33,14 +33,14 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
 
 /* SCROLL AREA */
 #scroll { flex:1; overflow-y:auto; padding-bottom:100px; }
-.panel { display:none; } .panel.on { display:block; }
+.panel { display:none; }.panel.on { display:block; }
 
 /* TABLA PRESUPUESTO */
 #col-hdr { display:grid; grid-template-columns:1fr 85px 85px; padding:10px 18px; background:#f0ece3; position:sticky; top:0; z-index:9; border-bottom:1px solid rgba(0,0,0,.08); }
 .ch { font-size:9px; color:#888; text-transform:uppercase; }
 .g-row { display:grid; grid-template-columns:1fr 85px 85px; padding:12px 18px; background:#e6e2d8; border-top:1px solid rgba(0,0,0,.07); font-weight:500; }
 .c-row { display:grid; grid-template-columns:1fr 85px 85px; padding:12px 18px 12px 24px; background:#fdfbf7; border-top:1px solid rgba(0,0,0,.04); align-items:center; }
-.c-avail.pos { color:#4a6741; font-weight:500; } .c-avail.neg { color:#b04a4a; }
+.c-avail.pos { color:#4a6741; font-weight:500; }.c-avail.neg { color:#b04a4a; }
 
 /* TX ITEMS */
 .tx-item { display:flex; align-items:center; padding:14px 18px; background:#fdfbf7; border-top:1px solid rgba(0,0,0,0.04); gap:12px; }
@@ -60,7 +60,7 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
 .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; display:flex; align-items:flex-end; opacity:0; pointer-events:none; transition:opacity 0.3s; backdrop-filter: blur(4px); }
 .overlay.open { opacity:1; pointer-events:all; }
 .sheet { background:#fdfbf7; width:100%; padding:20px 24px 40px; border-radius:24px 24px 0 0; transform:translateY(100%); transition:transform 0.3s ease-out; }
-.overlay.open .sheet { transform:translateY(0); }
+.overlay.open.sheet { transform:translateY(0); }
 .sh-handle { width:40px; height:4px; background:#d0ccc4; border-radius:2px; margin:0 auto 20px; }
 
 /* BOTONES Y FORMS */
@@ -84,7 +84,7 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
     </div>
     <div id="pills">
       <div class="pill"><span class="pill-lbl">Ingresos</span><div class="pill-val g" id="p-income">€0</div></div>
-      <div class="pill"><span class="pill-lbl">Saldo</span><div class="pill-val" id="p-assigned">€0</div></div>
+      <div class="pill"><span class="pill-lbl">Asignado</span><div class="pill-val" id="p-assigned">€0</div></div>
       <div class="pill"><span class="pill-lbl">Gastado</span><div class="pill-val r" id="p-spent">€0</div></div>
     </div>
   </div>
@@ -96,11 +96,11 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
 
   <div id="scroll">
     <div class="panel on" id="panel-budget">
-      <div id="col-hdr"><span>Categoría</span><span style="text-align:right">Asignado</span><span style="text-align:right">Disponible</span></div>
+      <div id="col-hdr"><span class="ch">Categoría</span><span class="ch" style="text-align:right">Asignado</span><span class="ch" style="text-align:right">Disponible</span></div>
       <div id="b-body"></div>
     </div>
     <div class="panel" id="panel-tx"><div id="tx-body"></div></div>
-    <div class="panel" id="panel-rep"><div id="rep-body"></div></div>
+    <div class="panel" id="panel-rep"><div id="rep-body"><div style="padding: 20px; text-align:center; color:#888;">Gráficos en desarrollo...</div></div></div>
   </div>
 
   <button id="fab" onclick="openSh('tx')">+</button>
@@ -138,26 +138,29 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
   </div>
 </div>
 
-<div id="toast"></div>
-
 <script>
 // ESTADO INICIAL
-let S = JSON.parse(localStorage.getItem('ma-v8')) || { groups: [], monthData: {}, txs: [] };
+let S = JSON.parse(localStorage.getItem('ma-v8')) |
+
+| { groups:, monthData: {}, txs: };
 let currentMonth = new Date();
 let txType = 'expense';
 
 const ef = n => '€' + Math.abs(n).toFixed(2).replace('.',',');
 const monthKey = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
 
+// UTILIDAD: Sanitización HTML para prevenir DOM-XSS
+const escapeHTML = (str) => {
+  if (!str) return '';
+  return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+};
+
 function save() { localStorage.setItem('ma-v8', JSON.stringify(S)); }
 
-// CIERRE AUTOMÁTICO AL TOCAR FUERA (Tu petición específica)
+// CIERRE AUTOMÁTICO AL TOCAR FUERA
 document.querySelectorAll('.overlay').forEach(overlay => {
   overlay.addEventListener('click', (e) => {
-    // Si el clic es en el overlay (fondo) y no en la tarjeta (sheet)
-    if (e.target.classList.contains('overlay')) {
-      closeAllSheets();
-    }
+    if (e.target.classList.contains('overlay')) closeAllSheets();
   });
 });
 
@@ -167,7 +170,7 @@ function closeAllSheets() {
 
 function openSh(id) {
   if(id === 'tx') {
-    document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('f-date').value = new Date().toISOString().split('T');
     populateCats();
     setType('expense');
   }
@@ -176,16 +179,16 @@ function openSh(id) {
 
 function setType(t) {
   txType = t;
-  document.getElementById('btn-t-exp').style.background = t === 'expense' ? '#4a6741' : '#e6e2d8';
-  document.getElementById('btn-t-exp').style.color = t === 'expense' ? '#fff' : '#000';
-  document.getElementById('btn-t-inc').style.background = t === 'income' ? '#4a6741' : '#e6e2d8';
-  document.getElementById('btn-t-inc').style.color = t === 'income' ? '#fff' : '#000';
-  document.getElementById('f-cat-fg').style.visibility = t === 'income' ? 'hidden' : 'visible';
+  document.getElementById('btn-t-exp').style.background = t === 'expense'? '#4a6741' : '#e6e2d8';
+  document.getElementById('btn-t-exp').style.color = t === 'expense'? '#fff' : '#000';
+  document.getElementById('btn-t-inc').style.background = t === 'income'? '#4a6741' : '#e6e2d8';
+  document.getElementById('btn-t-inc').style.color = t === 'income'? '#fff' : '#000';
+  document.getElementById('f-cat-fg').style.visibility = t === 'income'? 'hidden' : 'visible';
 }
 
 function populateCats() {
   const sel = document.getElementById('f-cat');
-  sel.innerHTML = S.groups.map(g => `<optgroup label="${g.name}">${g.cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</optgroup>`).join('');
+  sel.innerHTML = S.groups.map(g => `<optgroup label="${escapeHTML(g.name)}">${g.cats.map(c => `<option value="${c.id}">${escapeHTML(c.name)}</option>`).join('')}</optgroup>`).join('');
 }
 
 function saveTx() {
@@ -194,8 +197,10 @@ function saveTx() {
   const tx = {
     id: Date.now(),
     amt: amt,
-    pay: document.getElementById('f-pay').value || 'Sin concepto',
-    cat: txType === 'income' ? null : document.getElementById('f-cat').value,
+    pay: escapeHTML(document.getElementById('f-pay').value) |
+
+| 'Sin concepto',
+    cat: txType === 'income'? null : document.getElementById('f-cat').value,
     date: document.getElementById('f-date').value,
     month: document.getElementById('f-date').value.slice(0,7),
     type: txType
@@ -203,48 +208,170 @@ function saveTx() {
   S.txs.push(tx);
   save();
   closeAllSheets();
+  
+  // Limpiar campos
+  document.getElementById('f-amt').value = '';
+  document.getElementById('f-pay').value = '';
   fullRender();
 }
 
 function saveCat() {
-  const gNm = document.getElementById('c-newg').value;
-  const cNm = document.getElementById('c-nm').value;
-  if(!gNm || !cNm) return;
+  const gNm = escapeHTML(document.getElementById('c-newg').value);
+  const cNm = escapeHTML(document.getElementById('c-nm').value);
+  if(!gNm ||!cNm) return;
+  
   let g = S.groups.find(x => x.name === gNm);
-  if(!g) { g = { name: gNm, cats: [] }; S.groups.push(g); }
+  if(!g) { g = { name: gNm, cats: }; S.groups.push(g); }
   g.cats.push({ id: Date.now(), name: cNm });
   save();
   closeAllSheets();
+  
+  // Limpiar campos
+  document.getElementById('c-newg').value = '';
+  document.getElementById('c-nm').value = '';
   fullRender();
+}
+
+// LÓGICA: Algoritmo Edad del Dinero (FIFO)
+function calculateAgeOfMoney() {
+  let inflows = S.txs.filter(t => t.type === 'income')
+                   .map(t => ({...t})) 
+                   .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  let outflows = S.txs.filter(t => t.type === 'expense')
+                    .sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  let start = 0; 
+  let ages =;
+
+  for (let out of outflows) {
+    let amountToCover = out.amt;
+    while (amountToCover > 0 && start < inflows.length) {
+      let currentInflow = inflows[start];
+      if (currentInflow.amt <= 0) {
+        start++; 
+        continue;
+      }
+      
+      let used = Math.min(amountToCover, currentInflow.amt);
+      amountToCover -= used;
+      currentInflow.amt -= used;
+
+      let ageInMs = new Date(out.date) - new Date(currentInflow.date);
+      let ageInDays = Math.floor(ageInMs / (1000 * 60 * 60 * 24));
+      ages.push(ageInDays);
+    }
+  }
+
+  let last10 = ages.slice(-10);
+  if (last10.length === 0) return 0;
+  return Math.round(last10.reduce((sum, age) => sum + age, 0) / last10.length);
+}
+
+// LÓGICA: Algoritmo de Arrastre de Presupuesto Base Cero
+function calculateBudget(targetMk) {
+  // 1. Obtener todos los meses registrados ordenados hasta el actual
+  let monthsSet = new Set(Object.keys(S.monthData));
+  S.txs.forEach(t => monthsSet.add(t.month));
+  monthsSet.add(targetMk);
+  let months = Array.from(monthsSet).sort().filter(m => m <= targetMk);
+
+  let rta = 0; // Ready to assign global
+  let catBalances = {};
+
+  months.forEach(mk => {
+    // Sumar ingresos al saldo maestro
+    let incomes = S.txs.filter(t => t.month === mk && t.type === 'income').reduce((s,t) => s + t.amt, 0);
+    rta += incomes;
+
+    // Calcular gastos por categoría en el mes iterado
+    let expensesByCat = {};
+    S.txs.filter(t => t.month === mk && t.type === 'expense').forEach(t => {
+      if (t.cat) {
+        expensesByCat[t.cat] = (expensesByCat[t.cat] |
+
+| 0) + t.amt;
+      } else {
+        rta -= t.amt; // Los gastos sin categoría restan directo de "Para asignar"
+      }
+    });
+
+    // Iterar categorías para calcular disponible y arrastres
+    S.groups.forEach(g => {
+      g.cats.forEach(c => {
+        let assigned = S.monthData[mk]?.assignments?.[c.id] |
+
+| 0;
+        let spent = expensesByCat[c.id] |
+
+| 0;
+
+        rta -= assigned;
+        catBalances[c.id] = (catBalances[c.id] |
+
+| 0) + assigned - spent;
+
+        // Si no es el mes actual y hay un sobrecoste (déficit), deducirlo de RTA para el mes siguiente
+        if (mk!== targetMk) {
+          if (catBalances[c.id] < 0) {
+            rta += catBalances[c.id]; // Al ser negativo, la suma lo resta del RTA global
+            catBalances[c.id] = 0; // No se arrastran balances negativos en la categoría
+          }
+        }
+      });
+    });
+  });
+
+  return { rta, catBalances };
 }
 
 function fullRender() {
   const mk = monthKey(currentMonth);
   document.getElementById('month-lbl').textContent = currentMonth.toLocaleDateString('es-ES', { month:'long', year:'numeric' }).toUpperCase();
   
-  // Totales
+  // Calcular todos los saldos considerando la lógica de arrastre
+  const budgetData = calculateBudget(mk);
+  document.getElementById('to-assign').textContent = ef(budgetData.rta);
+  
+  // Píldoras Totales del Mes
   const inc = S.txs.filter(t => t.month === mk && t.type === 'income').reduce((s,t) => s + t.amt, 0);
   const exp = S.txs.filter(t => t.month === mk && t.type === 'expense').reduce((s,t) => s + t.amt, 0);
+  const totalAssignedThisMonth = Object.values(S.monthData[mk]?.assignments |
+
+| {}).reduce((a,b)=>a+b, 0);
+  
   document.getElementById('p-income').textContent = ef(inc);
+  document.getElementById('p-assigned').textContent = ef(totalAssignedThisMonth);
   document.getElementById('p-spent').textContent = ef(exp);
   
-  // Budget render
+  document.getElementById('age-num').textContent = calculateAgeOfMoney();
+
+  // Presupuesto renderizado
   const body = document.getElementById('b-body');
   body.innerHTML = S.groups.map(g => `
-    <div class="g-row"><div>${g.name}</div><div style="text-align:right">--</div><div style="text-align:right">--</div></div>
-    ${g.cats.map(c => `
+    <div class="g-row"><div>${escapeHTML(g.name)}</div><div style="text-align:right">--</div><div style="text-align:right">--</div></div>
+    ${g.cats.map(c => {
+      const assigned = S.monthData[mk]?.assignments?.[c.id] |
+
+| 0;
+      const avail = budgetData.catBalances[c.id] |
+
+| 0;
+      const availClass = avail < 0? 'neg' : 'pos';
+      return `
       <div class="c-row">
-        <div>${c.name}</div>
-        <div style="text-align:right; color:#888" onclick="editAssigned('${c.id}')">${ef(S.monthData[mk]?.assignments?.[c.id] || 0)}</div>
-        <div class="c-avail pos" style="text-align:right">${ef(0)}</div>
+        <div>${escapeHTML(c.name)}</div>
+        <div style="text-align:right; color:#888" onclick="editAssigned('${c.id}')">${ef(assigned)}</div>
+        <div class="c-avail ${availClass}" style="text-align:right">${ef(avail)}</div>
       </div>
-    `).join('')}
+      `
+    }).join('')}
   `).join('');
 
-  // Tx render
+  // Transacciones renderizadas
   document.getElementById('tx-body').innerHTML = S.txs.filter(t => t.month === mk).map(t => `
     <div class="tx-item">
-      <div style="flex:1"><b>${t.pay}</b><br><small>${t.date}</small></div>
+      <div style="flex:1"><b>${escapeHTML(t.pay)}</b><br><small>${t.date}</small></div>
       <div class="tx-amt ${t.type}">${t.type==='income'?'+':'-'}${ef(t.amt)}</div>
     </div>
   `).join('');
@@ -255,7 +382,9 @@ function editAssigned(id) {
   if(val === null) return;
   const mk = monthKey(currentMonth);
   if(!S.monthData[mk]) S.monthData[mk] = { assignments: {} };
-  S.monthData[mk].assignments[id] = parseFloat(val) || 0;
+  S.monthData[mk].assignments[id] = parseFloat(val) |
+
+| 0;
   save();
   fullRender();
 }
