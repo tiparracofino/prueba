@@ -3,35 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplicación de Códigos Promocionales</title>
+    <title>Validador de Descuentos</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Validador de Descuentos</h1>
-    <p>La aplicación te pedirá un código. Por favor, revisa la consola de tu navegador para ver el resultado.</p>
+    <h1>Validador de Códigos Promocionales</h1>
+    <p>La aplicación te ha pedido un código. Recarga la página si deseas intentarlo de nuevo.</p>
 
     <script>
-        // 1. Solicitamos el código al usuario mediante una ventana emergente
+        // 1. Solicitamos el código al usuario nada más cargar la página
         let entradaUsuarioBruta = prompt('Introduzca su código promocional para saber su descuento: ');
 
-        // 2. Normalizamos la entrada (Programación defensiva)
+        // 2. Normalizamos la entrada (quitamos espacios y pasamos a mayúsculas)
         let codigoSanitizado = (entradaUsuarioBruta!== null)? entradaUsuarioBruta.trim().toUpperCase() : "";
 
-        // 3. Evaluamos el código e incluimos un caso por defecto (default)
+        // 3. Evaluamos el código usando alert() para que sea visible de inmediato
         switch(codigoSanitizado) {
             case "ORO":
-                console.log("El descuento aplicado es del 25%");
+                alert("El descuento aplicado es del 25%");
                 break;
             case "PLATA":
-                console.log("El descuento aplicado es del 15%");
+                alert("El descuento aplicado es del 15%");
                 break;
             case "BRONCE":
-                console.log("El descuento aplicado es del 5%");
+                alert("El descuento aplicado es del 5%");
                 break;
             case "":
-                console.warn("Operación cancelada o se ingresó un texto vacío.");
+                alert("Operación cancelada o se ingresó un texto vacío.");
                 break;
             default:
-                console.error(`Código promocional no válido: ${codigoSanitizado}`);
+                alert(`Código promocional no válido: ${codigoSanitizado}`);
                 break;
         }
     </script>
