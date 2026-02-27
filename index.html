@@ -11,7 +11,7 @@
 /* ESTILOS BASE */
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color:#1a1a18; background:#f0ece3; overflow:hidden; }
-#app { display:flex; flex-direction:column; height:100vh; }
+#app { display:flex; flex-direction:column; height:100vh; height:100dvh; } /* Arreglo para iOS Safari */
 
 /* CABECERA */
 #header { background-color:#1a1a18; padding-top:max(env(safe-area-inset-top), 20px); }
@@ -135,6 +135,16 @@ body { height:100%; font-family:'Noto Sans JP',sans-serif; font-size:14px; color
     <input type="text" class="finp" id="c-newg" placeholder="Nombre del Grupo (ej. Vivienda)">
     <input type="text" class="finp" id="c-nm" placeholder="Nombre Categoría (ej. Alquiler)">
     <button class="sbtn" onclick="saveCat()">Crear</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-assign">
+  <div class="sheet">
+    <div class="sh-handle"></div>
+    <h2 style="margin-bottom:15px">Asignar Presupuesto</h2>
+    <input type="number" class="finp" id="f-assign-amt" placeholder="Cantidad €">
+    <input type="hidden" id="f-assign-cat">
+    <button class="sbtn" onclick="saveAssigned()">Guardar Asignación</button>
   </div>
 </div>
 
@@ -270,7 +280,7 @@ function calculateAgeOfMoney() {
 
 // LÓGICA: Algoritmo de Arrastre de Presupuesto Base Cero
 function calculateBudget(targetMk) {
-  // 1. Obtener todos los meses registrados ordenados hasta el actual
+  // Obtener todos los meses registrados ordenados hasta el actual
   let monthsSet = new Set(Object.keys(S.monthData));
   S.txs.forEach(t => monthsSet.add(t.month));
   monthsSet.add(targetMk);
@@ -377,15 +387,31 @@ function fullRender() {
   `).join('');
 }
 
+// NUEVA FUNCIÓN: Abre el modal inferior para asignar presupuesto
 function editAssigned(id) {
-  const val = prompt("Cantidad a asignar:");
-  if(val === null) return;
+  document.getElementById('f-assign-cat').value = id;
   const mk = monthKey(currentMonth);
-  if(!S.monthData[mk]) S.monthData[mk] = { assignments: {} };
-  S.monthData[mk].assignments[id] = parseFloat(val) |
+  const currentVal = S.monthData[mk]?.assignments?.[id] |
 
 | 0;
+  
+  document.getElementById('f-assign-amt').value = currentVal === 0? '' : currentVal;
+  document.getElementById('ov-assign').classList.add('open');
+}
+
+// NUEVA FUNCIÓN: Guarda el valor desde el modal
+function saveAssigned() {
+  const id = document.getElementById('f-assign-cat').value;
+  const val = parseFloat(document.getElementById('f-assign-amt').value) |
+
+| 0;
+  const mk = monthKey(currentMonth);
+  
+  if(!S.monthData[mk]) S.monthData[mk] = { assignments: {} };
+  S.monthData[mk].assignments[id] = val;
+  
   save();
+  closeAllSheets();
   fullRender();
 }
 
