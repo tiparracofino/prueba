@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -12,109 +13,117 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 :root {
-  --bg: #ffffff;
-  --card: #ffffff;
-  --primary: #1a1a1a; /* Negro Tinta */
-  --accent: #bc002d;  /* Rojo Imperial */
-  --text: #1a1a1a;
-  --text-light: #888888;
-  --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+–bg: #ffffff;
+–card: #ffffff;
+–primary: #1a1a1a; /* Negro Tinta */
+–accent: #bc002d;  /* Rojo Imperial */
+–balanced: #2e7d32; /* Verde Musgo / Zen */
+–text: #1a1a1a;
+–text-light: #888888;
+–safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
 
-html, body { 
-  height: 100dvh; 
-  font-family:'Noto Sans JP', sans-serif; 
-  font-size:14px; 
-  color:var(--text); 
-  background:var(--bg); 
-  overflow:hidden; 
+html, body {
+height: 100dvh;
+font-family:‘Noto Sans JP’, sans-serif;
+font-size:14px;
+color:var(–text);
+background:var(–bg);
+overflow:hidden;
 }
 
 #app { display:flex; flex-direction:column; height:100%; position: relative; }
 
 /* ── HEADER JAPONÉS ── */
-#header { 
-  padding: clamp(40px, 8vh, 60px) 25px 20px;
-  background: var(--bg);
-  position: relative;
-  border-bottom: 1px solid #f0f0f0;
-  flex-shrink: 0;
+#header {
+padding: clamp(40px, 8vh, 60px) 25px 20px;
+background: var(–bg);
+position: relative;
+border-bottom: 1px solid #f0f0f0;
+flex-shrink: 0;
 }
 
 .shodo-title {
-  writing-mode: vertical-rl;
-  font-family: 'Noto Serif JP', serif;
-  font-weight: 900;
-  font-size: 3.5rem;
-  color: var(--primary);
-  line-height: 1;
-  float: left;
-  margin-right: 15px;
-  letter-spacing: -5px;
+writing-mode: vertical-rl;
+font-family: ‘Noto Serif JP’, serif;
+font-weight: 900;
+font-size: 3.5rem;
+color: var(–primary);
+line-height: 1;
+float: left;
+margin-right: 15px;
+letter-spacing: -5px;
+text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
 }
 
 .hanko {
-  display: inline-block;
-  border: 2px solid var(--accent);
-  color: var(--accent);
-  padding: 2px 4px;
-  font-weight: 900;
-  font-size: 10px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
+display: inline-block;
+border: 2px solid var(–accent);
+color: var(–accent);
+padding: 2px 4px;
+font-weight: 900;
+font-size: 10px;
+margin-bottom: 15px;
+text-transform: uppercase;
 }
 
 .header-meta {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  height: 140px;
+display: flex;
+flex-direction: column;
+justify-content: flex-end;
+height: 140px;
 }
 
 .sub-lang {
-  font-size: 10px;
-  letter-spacing: 0.2em;
-  color: var(--text-light);
-  text-transform: uppercase;
-  margin-bottom: 10px;
+font-size: 10px;
+letter-spacing: 0.2em;
+color: var(–text-light);
+text-transform: uppercase;
+margin-bottom: 10px;
 }
 
 #month-lbl {
-  font-family: 'Noto Serif JP', serif;
-  font-size: 1.4rem;
-  font-weight: 200;
-  text-transform: capitalize;
-  border-bottom: 1px solid var(--primary);
-  padding-bottom: 5px;
-  display: inline-block;
-  margin-bottom: 15px;
+font-family: ‘Noto Serif JP’, serif;
+font-size: 1.4rem;
+font-weight: 200;
+text-transform: capitalize;
+border-bottom: 1px solid var(–primary);
+padding-bottom: 5px;
+display: inline-block;
+margin-bottom: 15px;
 }
 
 /* ── BANNER DISPONIBLE ── */
-#banner { 
-  padding: 20px 25px; 
-  background: #fdfdfd; 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  flex-shrink: 0;
-  cursor: pointer;
-  transition: background 0.2s;
+#banner {
+padding: 20px 25px;
+background: #fdfdfd;
+display: flex;
+align-items: center;
+justify-content: space-between;
+flex-shrink: 0;
+cursor: pointer;
+transition: background 0.3s ease, border-color 0.3s ease;
+border-bottom: 1px solid transparent;
 }
 #banner:active { background: #f5f5f5; }
+#banner.deficit-bg { background: #fff0f0; border-bottom: 1px solid #ffcdd2; }
 
-#to-assign { 
-  font-family: 'Noto Serif JP', serif;
-  font-size: 32px; 
-  font-weight: 900; 
-  color: var(--primary);
-  transition: color 0.3s;
+#to-assign {
+font-family: ‘Noto Serif JP’, serif;
+font-size: 32px;
+font-weight: 900;
+color: var(–primary);
+transition: color 0.3s;
 }
-#to-assign.deficit { color: var(--accent); }
+#to-assign.deficit { color: var(–accent); }
+#to-assign.balanced { color: var(–balanced); }
+
+.pulse-text { animation: pulse 2s infinite; }
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
 
 .age-box { text-align: right; }
-#age-num { font-size: 28px; font-weight: 100; color: var(--accent); }
-.age-lbl { font-size: 8px; letter-spacing: 1px; color: var(--text-light); text-transform: uppercase; }
+#age-num { font-size: 28px; font-weight: 100; color: var(–accent); }
+.age-lbl { font-size: 8px; letter-spacing: 1px; color: var(–text-light); text-transform: uppercase; }
 
 /* ── PANELES Y SCROLL ── */
 #scroll { flex:1; overflow-y:auto; padding-bottom:100px; position: relative; }
@@ -124,157 +133,172 @@ html, body {
 @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
 /* ── TABLA DE PRESUPUESTO ── */
-.g-row { 
-  padding: 25px 25px 10px; 
-  font-size: 11px; 
-  letter-spacing: 2px; 
-  text-transform: uppercase; 
-  color: var(--text-light);
-  border-bottom: 2px solid var(--primary);
-  margin: 0 25px;
-  display: flex;
-  justify-content: space-between;
+.g-row {
+padding: 25px 25px 10px;
+font-size: 11px;
+letter-spacing: 2px;
+text-transform: uppercase;
+color: var(–text-light);
+border-bottom: 2px solid var(–primary);
+margin: 0 25px;
+display: flex;
+justify-content: space-between;
+align-items: center;
 }
 
-.c-row { 
-  display: grid; 
-  grid-template-columns: 1fr 80px 80px; 
-  padding: 18px 25px; 
-  align-items: center;
-  border-bottom: 1px solid #fafafa;
+.c-row {
+display: grid;
+grid-template-columns: 1fr 80px 80px;
+padding: 18px 25px;
+align-items: center;
+border-bottom: 1px solid #fafafa;
 }
 
-.c-name { font-size: 15px; font-weight: 400; color: var(--text); }
-.c-assigned { text-align: right; cursor: pointer; position: relative; }
-.c-assigned .val-txt { font-family: 'Noto Serif JP', serif; font-size: 16px; color: #888; display: inline-block; width: 100%; border-bottom: 1px dashed transparent; }
-.c-assigned:active .val-txt { border-bottom: 1px dashed #ccc; }
-.c-inp { 
-  display: none; width: 100%; text-align: right; border: none; 
-  border-bottom: 1px solid var(--primary); font-family: 'Noto Serif JP', serif; 
-  font-size: 16px; background: transparent; outline: none; border-radius: 0;
+.c-name {
+font-size: 15px;
+font-weight: 400;
+color: var(–text);
+cursor: pointer;
+transition: opacity 0.2s;
+display: flex;
+align-items: center;
+gap: 8px;
 }
+.c-name:active { opacity: 0.6; }
 
-.c-avail { font-family: 'Noto Serif JP', serif; font-size: 16px; font-weight: 900; text-align: right; }
-.c-avail.pos { color: var(--primary); }
-.c-avail.neg { color: var(--accent); }
+.c-assigned { text-align: right; position: relative; }
+.c-assigned .val-txt { font-family: ‘Noto Serif JP’, serif; font-size: 16px; color: #888; }
+
+.c-avail { font-family: ‘Noto Serif JP’, serif; font-size: 16px; font-weight: 900; text-align: right; }
+.c-avail.pos { color: var(–primary); }
+.c-avail.neg { color: var(–accent); }
 
 /* ── PILLS / RESUMEN ── */
-#pills { 
-  display: flex; 
-  gap: 20px; 
-  padding: 10px 0 0 0;
-  margin-top: 5px;
+#pills {
+display: flex;
+gap: 20px;
+padding: 10px 0 0 0;
+margin-top: 5px;
 }
 .pill { flex: 1; }
-.pill-lbl { font-size: 8px; text-transform: uppercase; color: var(--text-light); letter-spacing: 1px; }
-.pill-val { font-family: 'Noto Serif JP', serif; font-size: 14px; display: block; color: var(--primary); font-weight: 700;}
+.pill-lbl { font-size: 8px; text-transform: uppercase; color: var(–text-light); letter-spacing: 1px; }
+.pill-val { font-family: ‘Noto Serif JP’, serif; font-size: 14px; display: block; color: var(–primary); font-weight: 700;}
 
 /* ── NAVEGACIÓN ── */
-#nav { 
-  position:fixed; bottom:0; left:0; right:0; 
-  background: var(--primary); 
-  display:flex; 
-  padding-bottom:var(--safe-area-bottom);
-  z-index: 50;
+#nav {
+position:fixed; bottom:0; left:0; right:0;
+background: var(–primary);
+display:flex;
+padding-bottom:var(–safe-area-bottom);
+z-index: 50;
 }
-.ntab { 
-  flex:1; padding: 15px 0; 
-  background:none; border:none; 
-  color:rgba(255,255,255,0.4); 
-  display:flex; flex-direction:column; align-items:center; gap:4px;
-  transition: color 0.3s; cursor: pointer;
+.ntab {
+flex:1; padding: 15px 0;
+background:none; border:none;
+color:rgba(255,255,255,0.4);
+display:flex; flex-direction:column; align-items:center; gap:4px;
+transition: color 0.3s; cursor: pointer;
 }
-.ntab.on { color: var(--bg); }
+.ntab.on { color: var(–bg); }
 .nicon { font-size: 18px; }
 .nlbl { font-size: 8px; text-transform: uppercase; letter-spacing: 1px; }
 
 /* ── BOTÓN FLOTANTE ── */
-#fab { 
-  position:fixed; right:25px; bottom: calc(65px + var(--safe-area-bottom)); 
-  width:55px; height:55px; 
-  background:var(--accent); 
-  border-radius:0; 
-  display:flex; align-items:center; justify-content:center; 
-  color:#fff; font-size:24px; border:none;
-  box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
-  cursor: pointer; z-index: 40; transition: transform 0.2s;
+#fab {
+position:fixed; right:25px; bottom: calc(65px + var(–safe-area-bottom));
+width:55px; height:55px;
+background:var(–accent);
+border-radius:0;
+display:flex; align-items:center; justify-content:center;
+color:#fff; font-size:24px; border:none;
+box-shadow: 4px 4px 0px rgba(0,0,0,0.1);
+cursor: pointer; z-index: 40; transition: transform 0.2s;
 }
 #fab:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px rgba(0,0,0,0.1); }
 
 /* ── MODALES (OVERLAY & SHEET) ── */
 .overlay {
-  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.5); z-index: 100;
-  opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-  backdrop-filter: blur(2px);
+position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0,0,0,0.5); z-index: 100;
+opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+backdrop-filter: blur(2px);
 }
 .overlay.open { opacity: 1; pointer-events: auto; }
 
-.sheet { 
-  position: absolute; bottom: 0; left: 0; right: 0;
-  background: var(--bg); padding: 30px 25px calc(30px + var(--safe-area-bottom));
-  border-top: 5px solid var(--primary);
-  transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 1, 0.2, 1);
-  max-height: 90vh; overflow-y: auto;
+.sheet {
+position: absolute; bottom: 0; left: 0; right: 0;
+background: var(–bg); padding: 30px 25px calc(30px + var(–safe-area-bottom));
+border-top: 5px solid var(–primary);
+transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.1, 1, 0.2, 1);
+max-height: 90vh; overflow-y: auto;
 }
 .overlay.open .sheet { transform: translateY(0); }
 
-.sbtn { 
-  border-radius: 0; background: var(--primary); color: white;
-  text-transform: uppercase; letter-spacing: 2px; font-size: 12px; 
-  border: none; cursor: pointer; transition: opacity 0.2s; font-weight: bold;
+.sbtn {
+border-radius: 0; background: var(–primary); color: white;
+text-transform: uppercase; letter-spacing: 2px; font-size: 12px;
+border: none; cursor: pointer; transition: opacity 0.2s; font-weight: bold;
 }
 .sbtn:active { opacity: 0.8; }
 .sbtn-outline {
-  border: 1px solid var(--primary); background: transparent; color: var(--primary);
-  text-transform: uppercase; letter-spacing: 1px; font-size: 11px; padding: 8px 15px; cursor: pointer; font-weight: bold;
+border: 1px solid var(–primary); background: transparent; color: var(–primary);
+text-transform: uppercase; letter-spacing: 1px; font-size: 11px; padding: 8px 15px; cursor: pointer; font-weight: bold;
 }
 .sbtn-outline:active { background: #f5f5f5; }
+.sbtn-dashed {
+border: 1px dashed #ccc; background: transparent; color: var(–text-light);
+text-transform: uppercase; letter-spacing: 1px; font-size: 11px; padding: 15px; cursor: pointer; font-weight: bold; width: 100%; transition: all 0.2s;
+}
+.sbtn-dashed:active { background: #fafafa; border-color: var(–primary); color: var(–primary); }
 
 .finp {
-  width: 100%; padding: 12px 0; border: none; border-bottom: 2px solid #eee;
-  font-family: inherit; font-size: 16px; outline: none; transition: border-color 0.3s;
-  background: transparent; border-radius: 0; color: var(--text);
+width: 100%; padding: 12px 0; border: none; border-bottom: 2px solid #eee;
+font-family: inherit; font-size: 16px; outline: none; transition: border-color 0.3s;
+background: transparent; border-radius: 0; color: var(–text);
 }
-.finp:focus { border-bottom-color: var(--primary); }
+.finp:focus { border-bottom-color: var(–primary); }
 .finp::placeholder { color: #ccc; }
 
 /* ── LISTA DE TRANSACCIONES ── */
 .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 20px 25px; border-bottom: 1px solid #f5f5f5; }
 .tx-info { display: flex; flex-direction: column; gap: 4px; }
 .tx-payee { font-size: 15px; font-weight: 700; }
-.tx-meta { font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+.tx-meta { font-size: 10px; color: var(–text-light); text-transform: uppercase; letter-spacing: 1px; }
 .tx-amt-box { display: flex; align-items: center; gap: 15px; }
-.tx-amt { font-family: 'Noto Serif JP', serif; font-size: 18px; font-weight: 900; }
-.tx-amt.inc { color: var(--primary); }
-.tx-amt.exp { color: var(--accent); }
+.tx-amt { font-family: ‘Noto Serif JP’, serif; font-size: 18px; font-weight: 900; }
+.tx-amt.inc { color: var(–primary); }
+.tx-amt.exp { color: var(–accent); }
 .tx-del { background: none; border: none; color: #ccc; font-size: 20px; padding: 5px; cursor: pointer; }
 
 /* ── METAS Y AHORRO ── */
 .goal-card { margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px solid #f5f5f5; }
-.goal-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 12px; }
-.goal-title { font-size: 16px; font-weight: 700; }
-.goal-amounts { font-family: 'Noto Serif JP', serif; font-size: 14px; text-align: right; }
+.goal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.goal-title { font-size: 16px; font-weight: 700; display:flex; flex-direction:column; gap:4px; }
+.goal-link-badge { font-size: 9px; color: var(–text-light); text-transform: uppercase; letter-spacing: 1px; font-weight: 400; display:flex; align-items:center; gap:4px;}
+.goal-amounts { font-family: ‘Noto Serif JP’, serif; font-size: 14px; text-align: right; }
 .goal-bar-bg { height: 4px; background: #eee; width: 100%; position: relative; margin-bottom: 15px; }
-.goal-bar-fill { height: 100%; background: var(--accent); position: absolute; left: 0; top: 0; transition: width 0.5s ease; }
+.goal-bar-fill { height: 100%; background: var(–accent); position: absolute; left: 0; top: 0; transition: width 0.5s ease; }
 .goal-actions { display: flex; justify-content: space-between; align-items: center; }
 
 /* ── TOAST NOTIFICATION ── */
 #toast {
-  position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
-  background: var(--primary); color: white; padding: 12px 24px;
-  font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-  z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-20px);
+background: var(–primary); color: white; padding: 12px 24px;
+font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+z-index: 2000; opacity: 0; pointer-events: none; transition: all 0.3s ease;
+box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-/* ── STATS ── */
+/* ── STATS & AJUSTES ── */
 .stat-row { margin-bottom: 20px; }
 .stat-header { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 8px; font-weight: 700;}
-.stat-header span.val { font-family: 'Noto Serif JP', serif; font-weight: normal; }
+.stat-header span.val { font-family: ‘Noto Serif JP’, serif; font-weight: normal; }
 .stat-bar-bg { height: 4px; background: #eee; width: 100%; position: relative;}
-.stat-bar-fill { height: 100%; background: var(--primary); position: absolute; left: 0; top: 0;}
+.stat-bar-fill { height: 100%; background: var(–primary); position: absolute; left: 0; top: 0;}
+
+.setting-block { margin-bottom: 30px; }
+.setting-title { font-size: 12px; font-weight: bold; margin-bottom: 15px; color: var(–primary); text-transform: uppercase; letter-spacing: 1px; }
 
 </style>
 </head>
@@ -293,21 +317,25 @@ html, body {
       </div>
     </div>
 
-    <div id="pills">
-      <div class="pill"><span class="pill-lbl">Entradas</span><span class="pill-val" id="p-income">€0</span></div>
-      <div class="pill"><span class="pill-lbl">Asignado</span><span class="pill-val" id="p-assigned">€0</span></div>
-      <div class="pill"><span class="pill-lbl">Gastos</span><span class="pill-val" id="p-spent">€0</span></div>
-    </div>
+```
+<div id="pills">
+  <div class="pill"><span class="pill-lbl">Entradas</span><span class="pill-val" id="p-income">0</span></div>
+  <div class="pill"><span class="pill-lbl">Asignado</span><span class="pill-val" id="p-assigned">0</span></div>
+  <div class="pill"><span class="pill-lbl">Gastos</span><span class="pill-val" id="p-spent">0</span></div>
+</div>
+```
+
   </header>
 
   <!-- Banner interactivo de Presupuesto Disponible -->
+
   <div id="banner" onclick="openSheet('budget-opts')">
     <div>
       <div class="age-lbl" style="display:flex; align-items:center; gap:6px;">
         Presupuesto Disponible 
         <span style="font-size:14px; color:var(--text-light)">⚙️</span>
       </div>
-      <div id="to-assign">€0,00</div>
+      <div id="to-assign">0,00</div>
     </div>
     <div class="age-box">
         <div id="age-num">0</div>
@@ -320,16 +348,40 @@ html, body {
     <div class="panel" id="panel-tx"><div id="tx-content"></div></div>
     <div class="panel" id="panel-goals"><div id="goals-content" style="padding:30px 25px;"></div></div>
     <div class="panel" id="panel-rep"><div id="rep-content" style="padding:30px 25px;"></div></div>
-    <div class="panel" id="panel-settings">
-        <div style="padding:30px 25px;">
-            <div style="font-family:'Noto Serif JP', serif; font-size: 24px; margin-bottom:30px; color:var(--primary);">Ajustes del Sistema</div>
-            <button class="sbtn" style="width:100%; padding:18px; margin-bottom:15px;" onclick="exportData()">⬇ Exportar Backup JSON</button>
+
+```
+<!-- PANEL DE AJUSTES -->
+<div class="panel" id="panel-settings">
+    <div style="padding:30px 25px;">
+        <div style="font-family:'Noto Serif JP', serif; font-size: 24px; margin-bottom:35px; color:var(--primary);">Ajustes del Sistema</div>
+        
+        <!-- Copias de Seguridad -->
+        <div class="setting-block">
+            <div class="setting-title">Copias de Seguridad</div>
+            <p style="font-size:11px; color:var(--text-light); margin-bottom:15px; line-height:1.4;">
+                Descarga tu progreso en un archivo JSON o restaura un templo financiero anterior.
+            </p>
+            <div style="display:flex; gap:10px;">
+                <button class="sbtn-outline" style="flex:1; padding:15px; border-color:#ccc; color:var(--primary);" onclick="exportData()">⬇ Exportar</button>
+                <button class="sbtn-outline" style="flex:1; padding:15px;" onclick="document.getElementById('import-file').click()">⬆ Importar</button>
+                <input type="file" id="import-file" style="display:none;" accept=".json" onchange="importData(event)">
+            </div>
+        </div>
+        
+        <div style="border-top: 1px dashed #eee; margin: 35px 0;"></div>
+        
+        <!-- Zona de Peligro -->
+        <div class="setting-block">
+            <div class="setting-title" style="color: var(--accent);">Zona de Peligro</div>
             <button class="sbtn" style="width:100%; padding:18px; background:var(--accent);" onclick="resetApp()">⚠ Reiniciar Todo</button>
         </div>
     </div>
+</div>
+```
+
   </div>
 
-  <button id="fab" onclick="openSheet('tx')">＋</button>
+<button id="fab" onclick="openSheet('tx')">＋</button>
 
   <nav id="nav">
     <button class="ntab on" id="tab-budget" onclick="showPanel('budget')"><span class="nicon">体</span><span class="nlbl">Plan</span></button>
@@ -341,6 +393,7 @@ html, body {
 </div>
 
 <!-- Modal: Opciones de Presupuesto Disponible -->
+
 <div class="overlay" id="ov-budget-opts" onclick="closeSheet(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
@@ -348,30 +401,80 @@ html, body {
       <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
     </div>
 
-    <!-- Sección: Asignación Rápida -->
-    <div style="margin-bottom: 35px;">
-      <div style="font-size:14px; font-weight:bold; margin-bottom:8px; color:var(--primary);">⚡ Asignación Rápida</div>
-      <p style="font-size:11px; color:var(--text-light); margin-bottom:15px; line-height:1.4;">Mueve dinero de tu disponible directamente a una categoría.</p>
-      
-      <select id="f-quick-cat" class="finp" style="margin-bottom:15px; font-size:14px;"></select>
-      <input type="number" id="f-quick-amt" class="finp" placeholder="Importe a asignar €" style="margin-bottom:20px; font-size:24px; font-family:'Noto Serif JP', serif;" step="0.01">
-      <button class="sbtn" style="width:100%; padding:15px;" onclick="quickAssign()">Asignar Fondos</button>
+```
+<div style="margin-bottom: 35px;">
+  <div style="font-size:14px; font-weight:bold; margin-bottom:8px; color:var(--primary);">⚡ Asignación Rápida</div>
+  <p style="font-size:11px; color:var(--text-light); margin-bottom:15px; line-height:1.4;">Mueve dinero de tu disponible directamente a una categoría. (Usa un valor negativo para retirarlo)</p>
+  
+  <select id="f-quick-cat" class="finp" style="margin-bottom:15px; font-size:14px;"></select>
+  <input type="number" id="f-quick-amt" class="finp" placeholder="Importe a asignar" style="margin-bottom:20px; font-size:24px; font-family:'Noto Serif JP', serif;" step="0.01">
+  <button class="sbtn" style="width:100%; padding:15px;" onclick="quickAssign()">Asignar Fondos</button>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- Modal: Nuevo Grupo -->
+
+<div class="overlay" id="ov-new-group" onclick="closeSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+      <div class="sh-title" style="font-family:'Noto Serif JP', serif; font-size: 22px; font-weight: 900; color:var(--primary);">Nuevo Grupo</div>
+      <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
+    </div>
+    <input type="text" id="ng-name" class="finp" placeholder="Nombre (ej. Suscripciones)" style="margin-bottom:30px">
+    <button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveGroup()">Crear Grupo</button>
+  </div>
+</div>
+
+<!-- Modal: Nueva Categoría -->
+
+<div class="overlay" id="ov-new-cat" onclick="closeSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+      <div class="sh-title" style="font-family:'Noto Serif JP', serif; font-size: 22px; font-weight: 900; color:var(--primary);">Nueva Categoría</div>
+      <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
     </div>
 
-    <div style="border-top:1px dashed #eee; margin-bottom: 25px;"></div>
+```
+<div style="display:flex; gap:15px; margin-bottom:30px;">
+    <input type="text" id="nc-emoji" class="finp" placeholder="📝" style="width: 60px; text-align: center;" maxlength="2">
+    <input type="text" id="nc-name" class="finp" placeholder="Nombre (ej. Gimnasio)" style="flex:1;">
+</div>
 
-    <!-- Sección: Cuadrar Saldo -->
-    <div>
-      <div style="font-size:14px; font-weight:bold; margin-bottom:8px; color:var(--primary);">⚖️ Reconciliación (Cuadrar Saldo)</div>
-      <p style="font-size:11px; color:var(--text-light); margin-bottom:15px; line-height:1.4;">Si la app no coincide con tu banco, introduce tu saldo real. Se creará un ajuste automático.</p>
-      
-      <input type="number" id="f-real-balance" class="finp" placeholder="Tu saldo real actual €" style="margin-bottom:20px; font-size:24px; font-family:'Noto Serif JP', serif;" step="0.01">
-      <button class="sbtn-outline" style="width:100%; padding:15px; border: 2px solid var(--primary);" onclick="adjustBalance()">Crear Ajuste Mágico</button>
+<button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveNewCategory()">Añadir Categoría</button>
+```
+
+  </div>
+</div>
+
+<!-- Modal Editar Categoría -->
+
+<div class="overlay" id="ov-edit-cat" onclick="closeSheet(event)">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
+      <div class="sh-title" style="font-family:'Noto Serif JP', serif; font-size: 22px; font-weight: 900; color:var(--primary);">Editar Categoría</div>
+      <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
     </div>
+
+```
+<div style="display:flex; gap:15px; margin-bottom:30px;">
+    <input type="text" id="e-cat-emoji" class="finp" placeholder="🍜" style="width: 60px; text-align: center;" maxlength="2">
+    <input type="text" id="e-cat-name" class="finp" placeholder="Nombre de la categoría" style="flex:1;">
+</div>
+
+<div style="display:flex; gap:10px;">
+    <button class="sbtn-outline" style="flex:1; padding:15px; border-color:var(--accent); color:var(--accent);" onclick="deleteCategory()">Eliminar</button>
+    <button class="sbtn" style="flex:2; padding:15px;" onclick="saveEditCategory()">Guardar</button>
+</div>
+```
+
   </div>
 </div>
 
 <!-- Modal Nueva Transacción -->
+
 <div class="overlay" id="ov-tx" onclick="closeSheet(event)">
     <div class="sheet" onclick="event.stopPropagation()">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
@@ -379,53 +482,75 @@ html, body {
         <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
       </div>
 
-      <div style="display:flex; gap:10px; margin-bottom:25px;">
-        <button id="type-exp" class="sbtn" style="flex:1; padding:12px; background:var(--primary); color:white" onclick="setTxType('expense')">Gasto</button>
-        <button id="type-inc" class="sbtn" style="flex:1; padding:12px; background:#f0f0f0; color:var(--text)" onclick="setTxType('income')">Ingreso</button>
-      </div>
+```
+  <div style="display:flex; gap:10px; margin-bottom:25px;">
+    <button id="type-exp" class="sbtn" style="flex:1; padding:12px; background:var(--primary); color:white" onclick="setTxType('expense')">Gasto</button>
+    <button id="type-inc" class="sbtn" style="flex:1; padding:12px; background:#f0f0f0; color:var(--text)" onclick="setTxType('income')">Ingreso</button>
+  </div>
 
-      <input type="number" id="f-amt" class="finp" placeholder="Importe €" style="font-size:36px; font-weight:300; margin-bottom:15px; font-family:'Noto Serif JP', serif;" step="0.01">
-      <input type="text" id="f-payee" class="finp" placeholder="Concepto (Opcional)" style="margin-bottom:15px">
-      <input type="date" id="f-date" class="finp" style="margin-bottom:15px">
-      <select id="f-cat" class="finp" style="margin-bottom:30px"></select>
-      
-      <button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveTx()">Confirmar</button>
-    </div>
+  <input type="number" id="f-amt" class="finp" placeholder="Importe" style="font-size:36px; font-weight:300; margin-bottom:15px; font-family:'Noto Serif JP', serif;" step="0.01">
+  <input type="text" id="f-payee" class="finp" placeholder="Concepto (Opcional)" style="margin-bottom:15px">
+  <input type="date" id="f-date" class="finp" style="margin-bottom:15px">
+  <select id="f-cat" class="finp" style="margin-bottom:30px"></select>
+  
+  <button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveTx()">Confirmar</button>
+</div>
+```
+
 </div>
 
 <!-- Modal Nueva Meta -->
+
 <div class="overlay" id="ov-new-goal" onclick="closeSheet(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
       <div class="sh-title" style="font-family:'Noto Serif JP', serif; font-size: 22px; font-weight: 900; color:var(--primary);">Crear Meta</div>
       <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
     </div>
-    
-    <input type="text" id="g-name" class="finp" placeholder="Nombre (ej. Viaje a Japón)" style="margin-bottom:15px">
-    <input type="number" id="g-target" class="finp" placeholder="Objetivo Final €" style="margin-bottom:15px" step="0.01">
-    <input type="text" id="g-icon" class="finp" placeholder="Emoji ⛩️" style="margin-bottom:30px" maxlength="2">
-    
-    <button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveGoal()">Trazar Camino</button>
+
+```
+<input type="text" id="g-name" class="finp" placeholder="Nombre (ej. Viaje a Japón)" style="margin-bottom:15px">
+<input type="number" id="g-target" class="finp" placeholder="Objetivo Final" style="margin-bottom:15px" step="0.01">
+
+<div style="display:flex; gap:15px; margin-bottom:15px;">
+    <input type="text" id="g-icon" class="finp" placeholder="⛩️" style="width: 60px; text-align: center;" maxlength="2">
+    <select id="g-cat" class="finp" style="flex:1; font-size:14px; color:var(--text-light);"></select>
+</div>
+<p style="font-size:10px; color:var(--text-light); margin-bottom:30px; line-height:1.4;">
+    Si vinculas una categoría, el progreso de la meta será el saldo disponible de dicha categoría en tu presupuesto.
+</p>
+
+<button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveGoal()">Trazar Camino</button>
+```
+
   </div>
 </div>
 
 <!-- Modal Aportar a Meta -->
+
 <div class="overlay" id="ov-fund-goal" onclick="closeSheet(event)">
   <div class="sheet" onclick="event.stopPropagation()">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 25px;">
       <div class="sh-title" id="fund-title" style="font-family:'Noto Serif JP', serif; font-size: 22px; font-weight: 900; color:var(--primary);">Aportar</div>
       <button onclick="closeSheet()" style="background:none; border:none; font-size: 24px; color: #ccc; cursor: pointer;">×</button>
     </div>
-    
-    <p style="font-size:12px; color:var(--text-light); margin-bottom:20px;">El importe se descontará de tu "Presupuesto Disponible". Puedes usar un valor negativo para retirar dinero.</p>
-    
-    <input type="number" id="f-goal-amt" class="finp" placeholder="Importe a mover €" style="font-size:36px; font-weight:300; margin-bottom:30px; font-family:'Noto Serif JP', serif;" step="0.01">
-    
-    <button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveFunding()">Aportar Fondos</button>
+
+```
+<div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:10px;">
+  <p style="font-size:12px; color:var(--text-light); margin:0;">Mover de "Presupuesto Disponible":</p>
+  <button class="sbtn-outline" style="font-size: 9px; padding: 6px 10px;" onclick="fundAllAvailable()">Max</button>
+</div>
+
+<input type="number" id="f-goal-amt" class="finp" placeholder="Importe a mover" style="font-size:36px; font-weight:300; margin-bottom:30px; font-family:'Noto Serif JP', serif;" step="0.01">
+
+<button class="sbtn" style="width:100%; padding:20px; font-size: 14px;" onclick="saveFunding()">Aportar Fondos</button>
+```
+
   </div>
 </div>
 
 <!-- Toast de Notificación -->
+
 <div id="toast">Acción completada</div>
 
 <script>
@@ -436,6 +561,8 @@ let DB = {
 let currentMonth = new Date();
 let currentTxType = 'expense';
 let activeGoalId = null;
+let activeEditCat = { gId: null, cId: null };
+let activeTargetGroup = null;
 
 function init() {
   const saved = localStorage.getItem('ma_budget_pro_v1');
@@ -443,15 +570,20 @@ function init() {
     DB = JSON.parse(saved); 
     if(!DB.goals) DB.goals = [];
     if(!DB.goalFundings) DB.goalFundings = [];
+    if(!DB.settings) DB.settings = { currency: 'EUR', startDate: new Date().toISOString() };
   } else {
     DB.groups = [
       { id: 'g1', name: 'Esenciales', cats: [{ id: 'c1', name: 'Vivienda', emoji: '🏠' }, { id: 'c2', name: 'Alimentación', emoji: '🍱' }, { id: 'c3', name: 'Transporte', emoji: '🚃' }]},
       { id: 'g2', name: 'Estilo de Vida', cats: [{ id: 'c4', name: 'Ocio', emoji: '🎬' }, { id: 'c5', name: 'Compras', emoji: '🛍️' }]}
     ];
-    DB.goals = [{ id: 'goal_1', name: 'Fondo de Emergencia', target: 1000, icon: '🛡️' }];
+    DB.goals = [{ id: 'goal_1', name: 'Fondo de Emergencia', target: 1000, icon: '🛡️', catId: null }];
     DB.goalFundings = [];
     DB.settings.startDate = new Date().toISOString();
   }
+  
+  // Fuerza la moneda internamente a EUR
+  DB.settings.currency = 'EUR';
+  
   document.getElementById('f-date').valueAsDate = new Date();
   updateUI();
 }
@@ -461,15 +593,24 @@ function updateUI() {
   const yName = currentMonth.getFullYear();
   document.getElementById('month-lbl').innerText = mName + ' ' + yName;
 
-  const start = new Date(DB.settings.startDate || new Date());
-  const diffTime = Math.abs(new Date() - start);
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  document.getElementById('age-num').innerText = diffDays;
+  const ageOfMoney = calculateAgeOfMoney();
+  document.getElementById('age-num').innerText = ageOfMoney;
 
   const toAssignVal = getToAssign(currentMonth);
   const toAssignEl = document.getElementById('to-assign');
-  toAssignEl.innerText = formatEuro(toAssignVal);
-  toAssignEl.className = toAssignVal < 0 ? 'deficit' : '';
+  const bannerEl = document.getElementById('banner');
+  toAssignEl.innerText = formatMoney(toAssignVal);
+  
+  if (toAssignVal < -0.01) {
+      toAssignEl.className = 'deficit pulse-text'; 
+      bannerEl.classList.add('deficit-bg');
+  } else if (Math.abs(toAssignVal) <= 0.01) {
+      toAssignEl.className = 'balanced'; 
+      bannerEl.classList.remove('deficit-bg');
+  } else {
+      toAssignEl.className = ''; 
+      bannerEl.classList.remove('deficit-bg');
+  }
 
   renderBudget();
   renderTxs();
@@ -477,6 +618,34 @@ function updateUI() {
   renderStats();
   updatePills();
   save();
+}
+
+// ── CÁLCULO DE DÍAS DE VIDA (FIFO Algorithm) ──
+function calculateAgeOfMoney() {
+    const totalSpent = DB.txs.filter(t => t.type === 'expense').reduce((sum, t) => sum + t.amt, 0);
+    const incomes = DB.txs.filter(t => t.type === 'income').sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    if (incomes.length === 0) return 0; 
+
+    let runningIncome = 0;
+    let currentIncomeDate = null;
+
+    for (let inc of incomes) {
+        runningIncome += inc.amt;
+        if (runningIncome > totalSpent) {
+            currentIncomeDate = new Date(inc.date);
+            break;
+        }
+    }
+
+    // Si los gastos superan o igualan todos los ingresos, no hay "edad del dinero"
+    if (!currentIncomeDate) return 0;
+
+    const today = new Date();
+    if (today < currentIncomeDate) return 0; 
+    
+    const diffTime = Math.abs(today - currentIncomeDate);
+    return Math.floor(diffTime / (1000 * 60 * 60 * 24));
 }
 
 // ── RENDERIZADOS ──
@@ -488,24 +657,42 @@ function renderBudget() {
 
   DB.groups.forEach(group => {
     const groupDiv = document.createElement('div');
-    const catsHtml = group.cats.map(cat => {
-      const assigned = DB.assignments[mKey][cat.id] || 0;
-      const avail = getAvailable(cat.id, currentMonth);
-      return `
-        <div class="c-row">
-          <div class="c-name">${cat.emoji} ${cat.name}</div>
-          <div class="c-assigned" onclick="editAssigned('${cat.id}', this, event)">
-            <span class="val-txt">${formatEuro(assigned)}</span>
-            <input type="number" class="c-inp" value="${assigned}" onblur="saveAssigned('${cat.id}', this)" onkeydown="if(event.key==='Enter') this.blur()">
-          </div>
-          <div class="c-avail ${avail >= 0 ? 'pos' : 'neg'}">${formatEuro(avail)}</div>
-        </div>
-      `;
-    }).join('');
+    
+    const catsHtml = group.cats.length === 0 
+        ? `<div style="padding: 15px 25px; font-size:11px; color:#ccc; text-align:center; font-style:italic;">Grupo vacío</div>` 
+        : group.cats.map(cat => {
+            const assigned = DB.assignments[mKey][cat.id] || 0;
+            const avail = getAvailable(cat.id, currentMonth);
+            return `
+              <div class="c-row">
+                <div class="c-name" onclick="openEditCat('${group.id}', '${cat.id}')">
+                  <span>${cat.emoji || '📝'}</span> <span>${cat.name}</span>
+                </div>
+                <div class="c-assigned">
+                  <span class="val-txt">${formatMoney(assigned)}</span>
+                </div>
+                <div class="c-avail ${avail >= 0 ? 'pos' : 'neg'}">${formatMoney(avail)}</div>
+              </div>
+            `;
+          }).join('');
 
-    groupDiv.innerHTML = `<div class="g-row"><span>${group.name}</span><span>Asignado / Disp.</span></div>${catsHtml}`;
+    groupDiv.innerHTML = `
+      <div class="g-row">
+        <span style="display:flex; align-items:center; gap:8px;">
+            ${group.name}
+            <button onclick="openNewCatSheet('${group.id}')" style="background:none; border:none; color:var(--text-light); font-size:16px; font-weight:bold; cursor:pointer; padding: 0 5px;" title="Añadir Categoría">+</button>
+        </span>
+        <span>Asignado / Disp.</span>
+      </div>
+      ${catsHtml}
+    `;
     container.appendChild(groupDiv);
   });
+
+  const addGroupDiv = document.createElement('div');
+  addGroupDiv.style.padding = '20px 25px';
+  addGroupDiv.innerHTML = `<button class="sbtn-dashed" onclick="openSheet('new-group')">+ Crear Nuevo Grupo</button>`;
+  container.appendChild(addGroupDiv);
 }
 
 function renderGoals() {
@@ -520,16 +707,28 @@ function renderGoals() {
     html += `<div style="padding: 60px 20px; text-align: center; color: var(--text-light); font-size: 12px; letter-spacing: 2px; text-transform: uppercase;">Aún no has trazado ningún camino.<br><br>Crea tu primera meta.</div>`;
   } else {
     DB.goals.forEach(g => {
-      const funded = (DB.goalFundings || []).filter(f => f.goalId === g.id).reduce((s, f) => s + f.amt, 0);
+      let funded = 0;
+      let linkedCatName = null;
+
+      if (g.catId) {
+          funded = Math.max(0, getAvailable(g.catId, currentMonth));
+          linkedCatName = getCatName(g.catId);
+      } else {
+          funded = (DB.goalFundings || []).filter(f => f.goalId === g.id).reduce((s, f) => s + f.amt, 0);
+      }
+
       const pct = g.target > 0 ? Math.min(100, (funded / g.target) * 100).toFixed(1) : 0;
       const isComplete = funded >= g.target;
       
       html += `
         <div class="goal-card">
           <div class="goal-header">
-            <div class="goal-title">${g.icon || '🎯'} ${g.name}</div>
+            <div class="goal-title">
+                <div>${g.icon || '🎯'} ${g.name}</div>
+                ${linkedCatName ? `<div class="goal-link-badge">🔗 Vinculado a: ${linkedCatName}</div>` : ''}
+            </div>
             <div class="goal-amounts ${isComplete ? 'inc' : ''}">
-               <span style="color:${isComplete ? 'var(--accent)' : 'var(--text)'}">${formatEuro(funded)}</span> / <span style="color:var(--text-light); font-size:12px;">${formatEuro(g.target)}</span>
+               <span style="color:${isComplete ? 'var(--accent)' : 'var(--text)'}">${formatMoney(funded)}</span> / <span style="color:var(--text-light); font-size:12px;">${formatMoney(g.target)}</span>
             </div>
           </div>
           <div class="goal-bar-bg">
@@ -539,7 +738,7 @@ function renderGoals() {
             <span style="font-size:10px; color:var(--text-light); letter-spacing:1px; text-transform:uppercase;">${pct}% Completado</span>
             <div style="display:flex; gap:10px;">
                 <button class="sbtn-outline" style="padding:5px 10px; border-color:#eee; color:#ccc;" onclick="deleteGoal('${g.id}')">×</button>
-                <button class="sbtn" style="padding: 6px 12px; font-size: 10px;" onclick="openFundSheet('${g.id}', '${g.name}')">Aportar</button>
+                <button class="sbtn" style="padding: 6px 12px; font-size: 10px;" onclick="openFundSheet('${g.id}', this)" data-name="${g.name.replace(/"/g, '&quot;').replace(/'/g, '&#39;')}">Aportar</button>
             </div>
           </div>
         </div>
@@ -562,7 +761,6 @@ function renderTxs() {
   container.innerHTML = monthlyTxs.map(t => {
     const isInc = t.type === 'income';
     const catName = isInc ? 'Directo a Disponible' : getCatName(t.cat);
-    // Para ajustes mágicos u otros ingresos negativos
     const sign = isInc ? (t.amt >= 0 ? '+' : '') : '-'; 
     
     return `
@@ -572,7 +770,7 @@ function renderTxs() {
           <span class="tx-meta">${t.date} • ${catName}</span>
         </div>
         <div class="tx-amt-box">
-          <span class="tx-amt ${isInc && t.amt >= 0 ? 'inc' : 'exp'}">${sign}${formatEuro(Math.abs(t.amt))}</span>
+          <span class="tx-amt ${isInc && t.amt >= 0 ? 'inc' : 'exp'}">${sign}${formatMoney(Math.abs(t.amt))}</span>
           <button class="tx-del" onclick="deleteTx('${t.id}')">×</button>
         </div>
       </div>
@@ -584,9 +782,10 @@ function renderStats() {
   const mKey = getMonthKey(currentMonth);
   const container = document.getElementById('rep-content');
   const exps = DB.txs.filter(t => t.type === 'expense' && t.date.startsWith(mKey));
-  let totalSpent = 0; let byCat = {};
   
-  exps.forEach(t => { totalSpent += t.amt; byCat[t.cat] = (byCat[t.cat] || 0) + t.amt; });
+  const totalSpent = exps.reduce((acc, t) => acc + t.amt, 0);
+  let byCat = {};
+  exps.forEach(t => { byCat[t.cat] = (byCat[t.cat] || 0) + t.amt; });
 
   let html = `<div style="font-family:'Noto Serif JP', serif; font-size: 24px; margin-bottom:30px; color:var(--primary);">Flujo del Mes</div>`;
   
@@ -598,7 +797,7 @@ function renderStats() {
       const amt = byCat[catId]; const pct = ((amt / totalSpent) * 100).toFixed(1);
       return `
         <div class="stat-row">
-          <div class="stat-header"><span>${getCatName(catId)}</span><span class="val">${formatEuro(amt)} (${pct}%)</span></div>
+          <div class="stat-header"><span>${getCatName(catId)}</span><span class="val">${formatMoney(amt)} (${pct}%)</span></div>
           <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: ${pct}%;"></div></div>
         </div>
       `;
@@ -622,42 +821,66 @@ function getAvailable(catId, monthDate) {
 
 function getToAssign(monthDate) {
   const currentKey = getMonthKey(monthDate);
-  let totalIncome = 0; let totalAssigned = 0; let totalGoalsFunded = 0;
+  let totalIncome = 0; let totalAssigned = 0; let totalStandaloneGoalsFunded = 0;
   
   DB.txs.forEach(t => { if (t.type === 'income' && t.date.substring(0, 7) <= currentKey) totalIncome += t.amt; });
   Object.keys(DB.assignments).forEach(mKey => { 
     if (mKey <= currentKey) { Object.values(DB.assignments[mKey]).forEach(val => totalAssigned += val); }
   });
+  
   if (DB.goalFundings) {
-    DB.goalFundings.forEach(f => { if (f.date.substring(0, 7) <= currentKey) totalGoalsFunded += f.amt; });
+    DB.goalFundings.forEach(f => { 
+        const meta = DB.goals.find(g => g.id === f.goalId);
+        if (meta && !meta.catId && f.date.substring(0, 7) <= currentKey) {
+            totalStandaloneGoalsFunded += f.amt; 
+        }
+    });
   }
   
-  return totalIncome - totalAssigned - totalGoalsFunded;
+  return totalIncome - totalAssigned - totalStandaloneGoalsFunded;
 }
 
 function updatePills() {
   const mKey = getMonthKey(currentMonth);
-  // Sumamos ingresos normales (positivos) y evitamos restar "ajustes negativos" en las analíticas de entradas puras
-  const inc = DB.txs.filter(t => t.type === 'income' && t.date.startsWith(mKey)).reduce((s,t)=>s+t.amt, 0);
+  const inc = DB.txs.filter(t => t.type === 'income' && t.amt > 0 && t.date.startsWith(mKey)).reduce((s,t)=>s+t.amt, 0);
   const exp = DB.txs.filter(t => t.type === 'expense' && t.date.startsWith(mKey)).reduce((s,t)=>s+t.amt, 0);
   
   const catAss = Object.values(DB.assignments[mKey] || {}).reduce((s,v)=>s+v, 0);
-  const goalAss = (DB.goalFundings || []).filter(f => f.date.startsWith(mKey)).reduce((s,f)=>s+f.amt, 0);
   
-  document.getElementById('p-income').innerText = formatEuro(inc);
-  document.getElementById('p-spent').innerText = formatEuro(exp);
-  document.getElementById('p-assigned').innerText = formatEuro(catAss + goalAss);
+  let standaloneGoalAss = 0;
+  if(DB.goalFundings) {
+      standaloneGoalAss = DB.goalFundings.filter(f => {
+          const meta = DB.goals.find(g => g.id === f.goalId);
+          return meta && !meta.catId && f.date.startsWith(mKey);
+      }).reduce((s,f)=>s+f.amt, 0);
+  }
+  
+  document.getElementById('p-income').innerText = formatMoney(inc);
+  document.getElementById('p-spent').innerText = formatMoney(exp);
+  document.getElementById('p-assigned').innerText = formatMoney(catAss + standaloneGoalAss);
 }
 
 // ── UTILIDADES ──
 function getMonthKey(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`; }
-function formatEuro(n) { return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n); }
+
+function formatMoney(n) { 
+    try {
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n); 
+    } catch(e) {
+        return n.toFixed(2) + " €";
+    }
+}
+
 function save() { localStorage.setItem('ma_budget_pro_v1', JSON.stringify(DB)); }
+
+let toastTimeout = null;
 function showToast(msg) {
   const t = document.getElementById('toast');
+  if(toastTimeout) clearTimeout(toastTimeout);
   t.innerText = msg; t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
+  toastTimeout = setTimeout(() => { t.classList.remove('show'); toastTimeout = null; }, 2500);
 }
+
 function getCatName(id) {
   for(let g of DB.groups) {
     const c = g.cats.find(cat => cat.id === id);
@@ -667,7 +890,10 @@ function getCatName(id) {
 }
 
 // ── INTERACCIONES DE UI ──
-function changeMonth(dir) { currentMonth.setMonth(currentMonth.getMonth() + dir); updateUI(); }
+function changeMonth(dir) { 
+  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + dir, 1); 
+  updateUI(); 
+}
 
 function showPanel(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('on'));
@@ -676,50 +902,60 @@ function showPanel(id) {
   document.getElementById('tab-' + id).classList.add('on');
 }
 
-function editAssigned(id, el, event) {
-  if(event.target.tagName.toLowerCase() === 'input') return; 
-  const txt = el.querySelector('.val-txt'); const inp = el.querySelector('.c-inp');
-  txt.style.display = 'none'; inp.style.display = 'block';
-  inp.focus(); inp.select();
-}
-
-function saveAssigned(id, inp) {
-  const mKey = getMonthKey(currentMonth);
-  if(!DB.assignments[mKey]) DB.assignments[mKey] = {};
-  DB.assignments[mKey][id] = parseFloat(inp.value) || 0;
-  updateUI();
-}
-
-// ── MODALES Y OPCIONES DE PRESUPUESTO ──
+// ── MODALES Y NAVEGACIÓN ──
 function openSheet(id) { 
   if(id === 'tx') {
     const sel = document.getElementById('f-cat');
     sel.innerHTML = DB.groups.map(g => `<optgroup label="${g.name}">${g.cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</optgroup>`).join('');
     document.getElementById('f-amt').value = '';
     document.getElementById('f-payee').value = '';
+    document.getElementById('f-date').valueAsDate = new Date();
     setTxType('expense');
   }
   if(id === 'new-goal') {
       document.getElementById('g-name').value = ''; document.getElementById('g-target').value = ''; document.getElementById('g-icon').value = '';
+      
+      const catSel = document.getElementById('g-cat');
+      let catOptions = `<option value="">-- Sin vincular (Independiente) --</option>`;
+      DB.groups.forEach(g => {
+          if(g.cats.length > 0) {
+              catOptions += `<optgroup label="${g.name}">`;
+              g.cats.forEach(c => { catOptions += `<option value="${c.id}">${c.name}</option>`; });
+              catOptions += `</optgroup>`;
+          }
+      });
+      catSel.innerHTML = catOptions;
   }
   if(id === 'budget-opts') {
       const sel = document.getElementById('f-quick-cat');
       sel.innerHTML = DB.groups.map(g => `<optgroup label="${g.name}">${g.cats.map(c => `<option value="${c.id}">${c.name}</option>`).join('')}</optgroup>`).join('');
       document.getElementById('f-quick-amt').value = '';
-      document.getElementById('f-real-balance').value = '';
+  }
+  if(id === 'new-group') {
+      document.getElementById('ng-name').value = '';
   }
   document.getElementById('ov-' + id).classList.add('open'); 
 }
 
-function openFundSheet(goalId, goalName) {
+function openFundSheet(goalId, btnOrName) {
     activeGoalId = goalId;
+    let goalName;
+    if (typeof btnOrName === 'string') {
+        goalName = btnOrName;
+    } else if (btnOrName && btnOrName.dataset) {
+        goalName = btnOrName.dataset.name;
+    } else {
+        const goal = DB.goals.find(g => g.id === goalId);
+        goalName = goal ? goal.name : '';
+    }
     document.getElementById('fund-title').innerText = "Aportar: " + goalName;
     document.getElementById('f-goal-amt').value = '';
     document.getElementById('ov-fund-goal').classList.add('open');
 }
 
 function closeSheet(event) {
-  if (event && !event.target.classList.contains('overlay')) return;
+  // Si se llama desde el click del overlay, solo cerrar si se hizo click en el overlay mismo
+  if (event && event.type === 'click' && !event.target.classList.contains('overlay')) return;
   document.querySelectorAll('.overlay').forEach(o => o.classList.remove('open'));
 }
 
@@ -738,7 +974,92 @@ function setTxType(t) {
   }
 }
 
-// ── LOGICA DE AJUSTE Y ASIGNACIÓN RÁPIDA ──
+// ── CREACIÓN DE GRUPOS Y CATEGORÍAS ──
+function saveGroup() {
+    const name = document.getElementById('ng-name').value.trim();
+    if(!name) { showToast('El nombre no puede estar vacío'); return; }
+    
+    DB.groups.push({
+        id: 'g_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        name: name,
+        cats: []
+    });
+    
+    closeSheet(); updateUI(); showToast('Grupo de origen creado');
+}
+
+function openNewCatSheet(groupId) {
+    activeTargetGroup = groupId;
+    document.getElementById('nc-emoji').value = '';
+    document.getElementById('nc-name').value = '';
+    document.getElementById('ov-new-cat').classList.add('open');
+}
+
+function saveNewCategory() {
+    const name = document.getElementById('nc-name').value.trim();
+    const emoji = document.getElementById('nc-emoji').value.trim() || '📝'; 
+    
+    if(!name) { showToast('El nombre no puede estar vacío'); return; }
+    
+    const group = DB.groups.find(g => g.id === activeTargetGroup);
+    if(group) {
+        group.cats.push({
+            id: 'c_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            name: name,
+            emoji: emoji
+        });
+        closeSheet(); updateUI(); showToast('Categoría plantada');
+    }
+}
+
+// ── EDICIÓN DE CATEGORÍAS ──
+function openEditCat(gId, cId) {
+    activeEditCat = { gId, cId };
+    const group = DB.groups.find(g => g.id === gId);
+    const cat = group.cats.find(c => c.id === cId);
+    
+    document.getElementById('e-cat-emoji').value = cat.emoji || '';
+    document.getElementById('e-cat-name').value = cat.name || '';
+    document.getElementById('ov-edit-cat').classList.add('open');
+}
+
+function saveEditCategory() {
+    const emoji = document.getElementById('e-cat-emoji').value.trim();
+    const name = document.getElementById('e-cat-name').value.trim();
+    
+    if(!name) { showToast('El nombre no puede estar vacío'); return; }
+
+    const group = DB.groups.find(g => g.id === activeEditCat.gId);
+    const cat = group.cats.find(c => c.id === activeEditCat.cId);
+    
+    cat.name = name;
+    if(emoji) cat.emoji = emoji;
+
+    closeSheet(); updateUI(); showToast('Categoría actualizada');
+}
+
+function deleteCategory() {
+    if(confirm('El viento se llevará esta categoría. ¿Estás seguro?')) {
+        const group = DB.groups.find(g => g.id === activeEditCat.gId);
+        group.cats = group.cats.filter(c => c.id !== activeEditCat.cId);
+        
+        Object.keys(DB.assignments).forEach(mKey => {
+            if(DB.assignments[mKey][activeEditCat.cId] !== undefined) {
+                delete DB.assignments[mKey][activeEditCat.cId];
+            }
+        });
+
+        DB.goals.forEach(g => {
+            if(g.catId === activeEditCat.cId) {
+                g.catId = null; 
+            }
+        });
+
+        closeSheet(); updateUI(); showToast('Categoría eliminada');
+    }
+}
+
+// ── LOGICA DE ASIGNACIÓN RÁPIDA ──
 function quickAssign() {
     const catId = document.getElementById('f-quick-cat').value;
     const amt = parseFloat(document.getElementById('f-quick-amt').value);
@@ -752,49 +1073,28 @@ function quickAssign() {
     closeSheet(); updateUI(); showToast('Asignación completada');
 }
 
-function adjustBalance() {
-    const currentToAssign = getToAssign(currentMonth);
-    const realBalance = parseFloat(document.getElementById('f-real-balance').value);
-    
-    if(isNaN(realBalance)) { showToast('Introduce tu saldo real'); return; }
-    
-    const diff = realBalance - currentToAssign;
-    if(diff === 0) { showToast('¡Tu saldo ya está perfectamente cuadrado!'); return; }
-    
-    // Si hay diferencia, creamos un registro de "ingreso". 
-    // Si la diferencia es negativa, el ingreso será negativo (lo cual descuenta del Disponible).
-    const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-01`;
-    
-    DB.txs.push({
-        id: 'adj_' + Date.now(),
-        amt: diff,
-        payee: '⚖️ Ajuste Mágico de Saldo',
-        date: dateStr,
-        cat: null,
-        type: 'income' 
-    });
-    
-    closeSheet(); updateUI(); showToast('Saldo reconciliado (' + (diff > 0 ? '+' : '') + formatEuro(diff) + ')');
-}
-
-// ── GUARDADO Y ELIMINACIÓN ──
+// ── GUARDADO Y ELIMINACIÓN DE TRANSACCIONES / METAS ──
 function saveTx() {
   const amt = parseFloat(document.getElementById('f-amt').value);
   const date = document.getElementById('f-date').value;
   if(!amt || amt <= 0 || !date) { showToast('Ingresa un importe válido'); return; }
   
+  const cat = currentTxType === 'expense' ? document.getElementById('f-cat').value : null;
+  if(currentTxType === 'expense' && !cat) { showToast('Selecciona una categoría'); return; }
+  
   DB.txs.push({ 
-    id: Date.now().toString(), amt: amt, 
+    id: Date.now().toString() + '_' + Math.random().toString(36).substr(2, 5), 
+    amt: amt, 
     payee: document.getElementById('f-payee').value.trim(), 
     date: date, 
-    cat: currentTxType === 'expense' ? document.getElementById('f-cat').value : null, 
+    cat: cat, 
     type: currentTxType 
   });
   closeSheet(); updateUI(); showToast('Registro guardado');
 }
 
 function deleteTx(id) {
-  if(confirm('¿El papel se quemará. ¿Deseas eliminar este registro?')) {
+  if(confirm('El papel se quemará. ¿Deseas eliminar este registro?')) {
     DB.txs = DB.txs.filter(t => t.id !== id);
     updateUI(); showToast('Registro eliminado');
   }
@@ -804,38 +1104,136 @@ function saveGoal() {
     const name = document.getElementById('g-name').value.trim();
     const target = parseFloat(document.getElementById('g-target').value);
     const icon = document.getElementById('g-icon').value.trim() || '🎯';
+    const catId = document.getElementById('g-cat').value || null; 
+    
     if(!name || !target || target <= 0) { showToast('Rellena nombre y objetivo válido'); return; }
-    DB.goals.push({ id: 'goal_' + Date.now(), name, target, icon });
+    
+    DB.goals.push({ id: 'goal_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), name, target, icon, catId });
     closeSheet(); updateUI(); showToast('Meta trazada');
+}
+
+function fundAllAvailable() {
+    const avail = getToAssign(currentMonth);
+    if(avail > 0) {
+        document.getElementById('f-goal-amt').value = avail.toFixed(2);
+    } else {
+        showToast('No hay fondos disponibles');
+    }
 }
 
 function saveFunding() {
     const amt = parseFloat(document.getElementById('f-goal-amt').value);
     if(isNaN(amt) || amt === 0) { showToast('Introduce un importe'); return; }
-    const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-01`;
-    DB.goalFundings.push({ id: 'fund_' + Date.now(), goalId: activeGoalId, amt, date: dateStr });
+    
+    const meta = DB.goals.find(g => g.id === activeGoalId);
+    if(!meta) return;
+
+    if(meta.catId) {
+        const mKey = getMonthKey(currentMonth);
+        if(!DB.assignments[mKey]) DB.assignments[mKey] = {};
+        DB.assignments[mKey][meta.catId] = (DB.assignments[mKey][meta.catId] || 0) + amt;
+    } else {
+        const dateStr = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-01`;
+        DB.goalFundings.push({ id: 'fund_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5), goalId: activeGoalId, amt, date: dateStr });
+    }
+
     closeSheet(); updateUI(); showToast(amt > 0 ? 'Fondos aportados' : 'Fondos retirados');
 }
 
 function deleteGoal(id) {
     if(confirm('¿Abandonar el camino? Se eliminará la meta y sus aportaciones volverán a tu disponible.')) {
         DB.goals = DB.goals.filter(g => g.id !== id);
-        DB.goalFundings = DB.goalFundings.filter(f => f.goalId !== id);
+        DB.goalFundings = DB.goalFundings.filter(f => f.goalId !== id); 
         updateUI(); showToast('Meta eliminada');
     }
 }
 
-// ── AJUSTES ──
-function exportData() {
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(DB, null, 2));
-  const dlAnchorElem = document.createElement('a');
-  dlAnchorElem.setAttribute("href", dataStr);
-  dlAnchorElem.setAttribute("download", `mabudget_backup_${getMonthKey(new Date())}.json`);
-  dlAnchorElem.click();
+// ── IMPORTAR/EXPORTAR CON PICKER ──
+async function exportData() {
+    const dataStr = JSON.stringify(DB, null, 2);
+    const defaultFilename = `mabudget_backup_${getMonthKey(new Date())}.json`;
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const file = new File([blob], defaultFilename, { type: 'application/json' });
+
+    try {
+        // 1. Web Share API (iOS: abre "Guardar en Archivos" → iCloud Drive, Google Drive, etc.)
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                title: '間 Ma Budget — Copia de Seguridad',
+                files: [file]
+            });
+            showToast('Copia compartida con éxito');
+            return;
+        }
+
+        // 2. File System Access API (Chrome/Edge escritorio: diálogo nativo de guardar)
+        if (window.showSaveFilePicker) {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: defaultFilename,
+                types: [{
+                    description: 'Archivo JSON',
+                    accept: { 'application/json': ['.json'] },
+                }],
+            });
+            const writable = await handle.createWritable();
+            await writable.write(blob);
+            await writable.close();
+            showToast('Templo exportado con éxito');
+            return;
+        }
+
+        // 3. Fallback: descarga directa
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = defaultFilename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Descarga iniciada');
+
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            console.error(err);
+            showToast('Error al exportar');
+        }
+    }
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            if(importedData.groups && importedData.txs) {
+                DB = importedData;
+                if(!DB.goals) DB.goals = [];
+                if(!DB.goalFundings) DB.goalFundings = [];
+                if(!DB.settings) DB.settings = { currency: 'EUR', startDate: new Date().toISOString() };
+                
+                // Forzamos EUR aunque el JSON importado tuviese otra cosa
+                DB.settings.currency = 'EUR';
+                
+                save();
+                updateUI();
+                showToast('Sabiduría ancestral restaurada');
+            } else {
+                throw new Error("Formato incorrecto");
+            }
+        } catch (error) {
+            showToast('El manuscrito parece dañado (Error de JSON)');
+        }
+        document.getElementById('import-file').value = '';
+    };
+    reader.readAsText(file);
 }
 
 function resetApp() {
-  if(confirm('Cuidado: Esta acción borrará la memoria por completo. ¿Empezar de cero?')) {
+  if(confirm('Cuidado: Esta acción borrará la memoria por completo. ¿Estás seguro de querer quemar tu templo financiero y empezar de cero?')) {
     localStorage.removeItem('ma_budget_pro_v1');
     location.reload();
   }
@@ -843,7 +1241,6 @@ function resetApp() {
 
 window.onload = init;
 </script>
+
 </body>
 </html>
-
-
