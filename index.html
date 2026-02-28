@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="es">
 <head>
 <meta charset="UTF-8">
@@ -12,186 +11,186 @@
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 
 :root {
-–bg: #ffffff;
-–bg-warm: #fafafa;
-–ink: #1a1a1a;
-–ink-light: #555555;
-–ink-faint: #aaaaaa;
-–ink-ghost: #e0e0e0;
-–shu: #c41e1e;        /* 朱 Vermillion ink */
-–shu-light: #e8524a;
-–shu-bg: #fff5f5;
-–matcha: #3d6b35;     /* 抹茶 */
-–safe-bottom: env(safe-area-inset-bottom, 16px);
-–safe-top: env(safe-area-inset-top, 0px);
+  --bg: #ffffff;
+  --bg-warm: #fafafa;
+  --ink: #1a1a1a;
+  --ink-light: #555555;
+  --ink-faint: #aaaaaa;
+  --ink-ghost: #e0e0e0;
+  --shu: #c41e1e;        /* 朱 Vermillion ink */
+  --shu-light: #e8524a;
+  --shu-bg: #fff5f5;
+  --matcha: #3d6b35;     /* 抹茶 */
+  --safe-bottom: env(safe-area-inset-bottom, 16px);
+  --safe-top: env(safe-area-inset-top, 0px);
 }
 
 html, body {
-height: 100%; height: 100dvh;
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-font-size: 14px; color: var(–ink);
-background: var(–bg);
-overflow: hidden;
-overscroll-behavior: none;
--webkit-text-size-adjust: 100%;
+  height: 100%; height: 100dvh;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 14px; color: var(--ink);
+  background: var(--bg);
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
 }
 
 #app {
-display: flex; flex-direction: column;
-height: 100dvh; height: 100%;
-position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+  height: 100dvh; height: 100%;
+  position: relative; overflow: hidden;
 }
 
 /* ══════════════════════════════════
 HEADER — Goshuin style
 ══════════════════════════════════ */
 #header {
-padding: calc(var(–safe-top) + 10px) 20px 12px;
-background: var(–bg);
-flex-shrink: 0;
-position: relative;
+  padding: calc(var(--safe-top) + 10px) 20px 12px;
+  background: var(--bg);
+  flex-shrink: 0;
+  position: relative;
 }
 
 .header-top {
-display: flex; align-items: center; justify-content: space-between;
-margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
 }
 
 .brand {
-display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 12px;
 }
 
 /* Hanko seal — like a real goshuin stamp */
 .hanko-seal {
-width: 36px; height: 36px;
-border: 2px solid var(–shu);
-display: flex; align-items: center; justify-content: center;
-position: relative;
-transform: rotate(-2deg);
-flex-shrink: 0;
+  width: 36px; height: 36px;
+  border: 2px solid var(--shu);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  transform: rotate(-2deg);
+  flex-shrink: 0;
 }
 .hanko-seal::before {
-content: ‘’;
-position: absolute; inset: 3px;
-border: 1px solid var(–shu);
-opacity: 0.5;
+  content: '';
+  position: absolute; inset: 3px;
+  border: 1px solid var(--shu);
+  opacity: 0.5;
 }
 .hanko-kanji {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 16px; font-weight: 800;
-color: var(–shu);
-line-height: 1;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 16px; font-weight: 800;
+  color: var(--shu);
+  line-height: 1;
 }
 
 .brand-text { display: flex; flex-direction: column; gap: 1px; }
 .brand-title {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 15px; font-weight: 800;
-color: var(–ink);
-letter-spacing: 1px;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 15px; font-weight: 800;
+  color: var(--ink);
+  letter-spacing: 1px;
 }
 .brand-sub {
-font-size: 7px; letter-spacing: 3px;
-color: var(–ink-faint); text-transform: uppercase;
+  font-size: 7px; letter-spacing: 3px;
+  color: var(--ink-faint); text-transform: uppercase;
 }
 
 /* Month navigator */
 .month-nav {
-display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 10px;
 }
 .month-btn {
-background: none; border: none;
-color: var(–ink-faint); font-size: 12px;
-cursor: pointer; padding: 6px;
-transition: color 0.2s;
+  background: none; border: none;
+  color: var(--ink-faint); font-size: 12px;
+  cursor: pointer; padding: 6px;
+  transition: color 0.2s;
 }
-.month-btn:active { color: var(–ink); }
+.month-btn:active { color: var(--ink); }
 
 #month-lbl {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 14px; font-weight: 600;
-text-transform: capitalize;
-color: var(–ink);
-min-width: 110px; text-align: center;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 14px; font-weight: 600;
+  text-transform: capitalize;
+  color: var(--ink);
+  min-width: 110px; text-align: center;
 }
 
 /* Summary pills */
 #pills {
-display: flex; gap: 0;
-border-top: 1px solid var(–ink-ghost);
-border-bottom: 1px solid var(–ink-ghost);
+  display: flex; gap: 0;
+  border-top: 1px solid var(--ink-ghost);
+  border-bottom: 1px solid var(--ink-ghost);
 }
 .pill {
-flex: 1; padding: 8px 8px;
-text-align: center; position: relative;
+  flex: 1; padding: 8px 8px;
+  text-align: center; position: relative;
 }
 .pill + .pill::before {
-content: ‘’; position: absolute; left: 0; top: 25%; bottom: 25%;
-width: 1px; background: var(–ink-ghost);
+  content: ''; position: absolute; left: 0; top: 25%; bottom: 25%;
+  width: 1px; background: var(--ink-ghost);
 }
 .pill-lbl {
-font-size: 7px; text-transform: uppercase;
-color: var(–ink-faint); letter-spacing: 1.5px;
-margin-bottom: 2px; display: block;
+  font-size: 7px; text-transform: uppercase;
+  color: var(--ink-faint); letter-spacing: 1.5px;
+  margin-bottom: 2px; display: block;
 }
 .pill-val {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 12px; font-weight: 600;
-color: var(–ink); display: block;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 12px; font-weight: 600;
+  color: var(--ink); display: block;
 }
 
 /* ══════════════════════════════════
 BANNER
 ══════════════════════════════════ */
 #banner {
-padding: 14px 20px;
-background: var(–bg);
-display: flex; align-items: center; justify-content: space-between;
-flex-shrink: 0; cursor: pointer;
-transition: all 0.3s ease;
-border-bottom: 1px solid var(–ink-ghost);
-position: relative;
+  padding: 14px 20px;
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0; cursor: pointer;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid var(--ink-ghost);
+  position: relative;
 }
-#banner:active { background: var(–bg-warm); }
-#banner.deficit-bg { background: var(–shu-bg); }
+#banner:active { background: var(--bg-warm); }
+#banner.deficit-bg { background: var(--shu-bg); }
 
 .banner-left { display: flex; flex-direction: column; gap: 1px; }
 .banner-label {
-font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
-color: var(–ink-faint);
+  font-size: 8px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--ink-faint);
 }
 
 #to-assign {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 26px; font-weight: 800;
-color: var(–ink); transition: color 0.3s;
-line-height: 1.2;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 26px; font-weight: 800;
+  color: var(--ink); transition: color 0.3s;
+  line-height: 1.2;
 }
-#to-assign.deficit { color: var(–shu); }
-#to-assign.balanced { color: var(–matcha); }
+#to-assign.deficit { color: var(--shu); }
+#to-assign.balanced { color: var(--matcha); }
 
 .pulse-text { animation: pulse 2.5s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
 
 .age-box { text-align: right; }
 #age-num {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 22px; font-weight: 400;
-color: var(–ink-light); line-height: 1;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 22px; font-weight: 400;
+  color: var(--ink-light); line-height: 1;
 }
 .age-lbl {
-font-size: 7px; letter-spacing: 1.5px;
-color: var(–ink-faint); text-transform: uppercase;
-margin-top: 2px;
+  font-size: 7px; letter-spacing: 1.5px;
+  color: var(--ink-faint); text-transform: uppercase;
+  margin-top: 2px;
 }
 
 /* ══════════════════════════════════
 SCROLL & PANELS
 ══════════════════════════════════ */
 #scroll {
-flex: 1; overflow-y: auto;
-padding-bottom: 75px;
--webkit-overflow-scrolling: touch;
+  flex: 1; overflow-y: auto;
+  padding-bottom: 75px;
+  -webkit-overflow-scrolling: touch;
 }
 .panel { display: none; animation: fadeSlide 0.3s ease; }
 .panel.on { display: block; }
@@ -201,117 +200,117 @@ padding-bottom: 75px;
 BUDGET TABLE — Sumi ledger
 ══════════════════════════════════ */
 .g-row {
-padding: 18px 20px 7px;
-font-size: 9px; letter-spacing: 3px;
-text-transform: uppercase;
-color: var(–ink-faint);
-display: flex; justify-content: space-between; align-items: center;
-position: relative;
+  padding: 18px 20px 7px;
+  font-size: 9px; letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative;
 }
 /* Ink brush stroke underline */
 .g-row::after {
-content: ‘’;
-position: absolute; bottom: 0; left: 20px; right: 20px;
-height: 2px;
-background: var(–ink);
-opacity: 0.12;
+  content: '';
+  position: absolute; bottom: 0; left: 20px; right: 20px;
+  height: 2px;
+  background: var(--ink);
+  opacity: 0.12;
 }
 
 .g-name-wrap { display: flex; align-items: center; gap: 8px; }
 .g-add-btn {
-background: none; border: none;
-color: var(–ink-faint); font-size: 14px;
-width: 22px; height: 22px;
-display: flex; align-items: center; justify-content: center;
-cursor: pointer; transition: color 0.2s;
+  background: none; border: none;
+  color: var(--ink-faint); font-size: 14px;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: color 0.2s;
 }
-.g-add-btn:active { color: var(–shu); }
+.g-add-btn:active { color: var(--shu); }
 
 .c-row {
-display: grid;
-grid-template-columns: 1fr 72px 72px;
-padding: 14px 20px;
-align-items: center;
-border-bottom: 1px solid rgba(0,0,0,0.03);
+  display: grid;
+  grid-template-columns: 1fr 72px 72px;
+  padding: 14px 20px;
+  align-items: center;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
 }
 .c-row:active { background: rgba(0,0,0,0.01); }
 
 .c-name {
-font-size: 14px; font-weight: 400;
-color: var(–ink); cursor: pointer;
-display: flex; align-items: center; gap: 8px;
+  font-size: 14px; font-weight: 400;
+  color: var(--ink); cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
 }
 .c-name:active { opacity: 0.5; }
 
 .c-assigned { text-align: right; }
 .c-assigned .val-txt {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 12px; color: var(–ink-faint);
+  font-family: 'Shippori Mincho', serif;
+  font-size: 12px; color: var(--ink-faint);
 }
 
 .c-avail {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 13px; font-weight: 800; text-align: right;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 13px; font-weight: 800; text-align: right;
 }
-.c-avail.pos { color: var(–ink); }
-.c-avail.neg { color: var(–shu); }
+.c-avail.pos { color: var(--ink); }
+.c-avail.neg { color: var(--shu); }
 
 /* ══════════════════════════════════
 TRANSACTIONS
 ══════════════════════════════════ */
 .tx-item {
-display: flex; justify-content: space-between; align-items: center;
-padding: 14px 20px;
-border-bottom: 1px solid rgba(0,0,0,0.03);
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.03);
 }
 .tx-info { display: flex; flex-direction: column; gap: 2px; }
 .tx-payee { font-size: 14px; font-weight: 500; }
-.tx-meta { font-size: 9px; color: var(–ink-faint); letter-spacing: 0.5px; }
+.tx-meta { font-size: 9px; color: var(--ink-faint); letter-spacing: 0.5px; }
 .tx-amt-box { display: flex; align-items: center; gap: 12px; }
-.tx-amt { font-family: ‘Shippori Mincho’, serif; font-size: 15px; font-weight: 800; }
-.tx-amt.inc { color: var(–matcha); }
-.tx-amt.exp { color: var(–shu); }
-.tx-del { background: none; border: none; color: var(–ink-ghost); font-size: 16px; cursor: pointer; padding: 4px; }
-.tx-del:active { color: var(–shu); }
+.tx-amt { font-family: 'Shippori Mincho', serif; font-size: 15px; font-weight: 800; }
+.tx-amt.inc { color: var(--matcha); }
+.tx-amt.exp { color: var(--shu); }
+.tx-del { background: none; border: none; color: var(--ink-ghost); font-size: 16px; cursor: pointer; padding: 4px; }
+.tx-del:active { color: var(--shu); }
 
 /* ══════════════════════════════════
 GOALS
 ══════════════════════════════════ */
 .goal-card {
-margin-bottom: 16px; padding: 16px;
-background: var(–bg);
-border: 1px solid rgba(0,0,0,0.05);
-position: relative;
+  margin-bottom: 16px; padding: 16px;
+  background: var(--bg);
+  border: 1px solid rgba(0,0,0,0.05);
+  position: relative;
 }
 
 .goal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
 .goal-title { font-size: 14px; font-weight: 500; display: flex; flex-direction: column; gap: 3px; }
-.goal-link-badge { font-size: 8px; color: var(–ink-faint); letter-spacing: 1px; }
-.goal-amounts { font-family: ‘Shippori Mincho’, serif; font-size: 12px; text-align: right; }
+.goal-link-badge { font-size: 8px; color: var(--ink-faint); letter-spacing: 1px; }
+.goal-amounts { font-family: 'Shippori Mincho', serif; font-size: 12px; text-align: right; }
 
 .goal-bar-bg {
-height: 2px; background: var(–ink-ghost);
-width: 100%; position: relative; margin-bottom: 12px;
-overflow: visible;
+  height: 2px; background: var(--ink-ghost);
+  width: 100%; position: relative; margin-bottom: 12px;
+  overflow: visible;
 }
 .goal-bar-fill {
-height: 100%; position: absolute; left: 0; top: 0;
-transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  height: 100%; position: absolute; left: 0; top: 0;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
 }
-.goal-bar-fill.complete { background: var(–shu); }
-.goal-bar-fill.progress { background: var(–ink); }
+.goal-bar-fill.complete { background: var(--shu); }
+.goal-bar-fill.progress { background: var(--ink); }
 
 /* Small circle marker at fill end */
 .goal-bar-fill::after {
-content: ‘’;
-position: absolute; right: -3px; top: -2px;
-width: 6px; height: 6px;
-border-radius: 50%;
-background: inherit;
+  content: '';
+  position: absolute; right: -3px; top: -2px;
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: inherit;
 }
 
 .goal-actions { display: flex; justify-content: space-between; align-items: center; }
-.goal-pct { font-size: 9px; color: var(–ink-faint); letter-spacing: 1.5px; }
+.goal-pct { font-size: 9px; color: var(--ink-faint); letter-spacing: 1.5px; }
 
 /* ══════════════════════════════════
 STATS
@@ -319,45 +318,45 @@ STATS
 .stat-row { margin-bottom: 16px; }
 .stat-header { display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 5px; }
 .stat-name { font-weight: 500; }
-.stat-val { font-family: ‘Shippori Mincho’, serif; color: var(–ink-light); }
-.stat-bar-bg { height: 2px; background: var(–ink-ghost); width: 100%; position: relative; }
-.stat-bar-fill { height: 100%; background: var(–ink); position: absolute; left: 0; top: 0; transition: width 0.5s ease; }
+.stat-val { font-family: 'Shippori Mincho', serif; color: var(--ink-light); }
+.stat-bar-bg { height: 2px; background: var(--ink-ghost); width: 100%; position: relative; }
+.stat-bar-fill { height: 100%; background: var(--ink); position: absolute; left: 0; top: 0; transition: width 0.5s ease; }
 
 /* ══════════════════════════════════
 NAVIGATION — Ink bar
 ══════════════════════════════════ */
 #nav {
-background: var(–ink);
-display: flex;
-padding-bottom: var(–safe-bottom);
-z-index: 50;
-flex-shrink: 0;
-width: 100%;
-min-height: 54px;
+  background: var(--ink);
+  display: flex;
+  padding-bottom: var(--safe-bottom);
+  z-index: 50;
+  flex-shrink: 0;
+  width: 100%;
+  min-height: 54px;
 }
 
 .ntab {
-flex: 1; padding: 9px 0 7px;
-background: none; border: none;
-color: rgba(255,255,255,0.25);
-display: flex; flex-direction: column; align-items: center; gap: 2px;
-transition: color 0.3s; cursor: pointer;
-position: relative;
+  flex: 1; padding: 9px 0 7px;
+  background: none; border: none;
+  color: rgba(255,255,255,0.25);
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  transition: color 0.3s; cursor: pointer;
+  position: relative;
 }
 .ntab.on { color: #ffffff; }
 /* Shu red indicator dot for active tab */
 .ntab.on::before {
-content: ‘’;
-position: absolute; top: 4px; left: 50%;
-transform: translateX(-50%);
-width: 4px; height: 4px;
-border-radius: 50%;
-background: var(–shu);
+  content: '';
+  position: absolute; top: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--shu);
 }
 
 .nicon {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 15px; font-weight: 800;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 15px; font-weight: 800;
 }
 .nlbl { font-size: 7px; letter-spacing: 1.5px; }
 
@@ -365,180 +364,180 @@ font-size: 15px; font-weight: 800;
 FAB — Hanko stamp button
 ══════════════════════════════════ */
 #fab {
-position: fixed; right: 20px; bottom: calc(68px + var(–safe-bottom));
-width: 48px; height: 48px;
-background: var(–shu);
-display: flex; align-items: center; justify-content: center;
-color: #fff; font-size: 22px; font-weight: 300;
-border: none; cursor: pointer; z-index: 40;
-box-shadow: 0 2px 12px rgba(196,30,30,0.3);
-transition: all 0.15s;
-border-radius: 0;
-transform: rotate(-1deg);
+  position: fixed; right: 20px; bottom: calc(68px + var(--safe-bottom));
+  width: 48px; height: 48px;
+  background: var(--shu);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 22px; font-weight: 300;
+  border: none; cursor: pointer; z-index: 40;
+  box-shadow: 0 2px 12px rgba(196,30,30,0.3);
+  transition: all 0.15s;
+  border-radius: 0;
+  transform: rotate(-1deg);
 }
 #fab:active {
-transform: rotate(0deg) scale(0.92);
-box-shadow: 0 1px 6px rgba(196,30,30,0.3);
+  transform: rotate(0deg) scale(0.92);
+  box-shadow: 0 1px 6px rgba(196,30,30,0.3);
 }
 
 /* ══════════════════════════════════
 MODALS — Clean sheet
 ══════════════════════════════════ */
 .overlay {
-position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-background: rgba(0,0,0,0.35);
-z-index: 100;
-opacity: 0; pointer-events: none;
-transition: opacity 0.3s ease;
-backdrop-filter: blur(3px);
--webkit-backdrop-filter: blur(3px);
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 100;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 }
 .overlay.open { opacity: 1; pointer-events: auto; }
 
 .sheet {
-position: absolute; bottom: 0; left: 0; right: 0;
-background: var(–bg);
-padding: 24px 20px calc(24px + var(–safe-bottom));
-transform: translateY(100%);
-transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
-max-height: 90vh; overflow-y: auto;
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--bg);
+  padding: 24px 20px calc(24px + var(--safe-bottom));
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+  max-height: 90vh; overflow-y: auto;
 }
 /* Ink stroke top border */
 .sheet::before {
-content: ‘’;
-position: absolute; top: 0; left: 0; right: 0;
-height: 2px; background: var(–ink);
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--ink);
 }
 .overlay.open .sheet { transform: translateY(0); }
 
 .sheet-header {
-display: flex; justify-content: space-between; align-items: center;
-margin-bottom: 22px;
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 22px;
 }
 .sh-title {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 18px; font-weight: 800; color: var(–ink);
+  font-family: 'Shippori Mincho', serif;
+  font-size: 18px; font-weight: 800; color: var(--ink);
 }
 .sh-close {
-background: none; border: none;
-font-size: 18px; color: var(–ink-faint);
-cursor: pointer; padding: 4px;
+  background: none; border: none;
+  font-size: 18px; color: var(--ink-faint);
+  cursor: pointer; padding: 4px;
 }
-.sh-close:active { color: var(–ink); }
+.sh-close:active { color: var(--ink); }
 
 /* Buttons */
 .sbtn {
-background: var(–ink); color: #fff;
-text-transform: uppercase; letter-spacing: 2px;
-font-size: 10px; font-weight: 700;
-border: none; cursor: pointer;
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-border-radius: 0; transition: opacity 0.15s;
+  background: var(--ink); color: #fff;
+  text-transform: uppercase; letter-spacing: 2px;
+  font-size: 10px; font-weight: 700;
+  border: none; cursor: pointer;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  border-radius: 0; transition: opacity 0.15s;
 }
 .sbtn:active { opacity: 0.8; }
 
 .sbtn-shu {
-background: var(–shu); color: #fff;
-text-transform: uppercase; letter-spacing: 2px;
-font-size: 10px; font-weight: 700;
-border: none; cursor: pointer;
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-border-radius: 0;
+  background: var(--shu); color: #fff;
+  text-transform: uppercase; letter-spacing: 2px;
+  font-size: 10px; font-weight: 700;
+  border: none; cursor: pointer;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  border-radius: 0;
 }
 .sbtn-shu:active { opacity: 0.85; }
 
 .sbtn-outline {
-border: 1px solid var(–ink-ghost); background: transparent;
-color: var(–ink); text-transform: uppercase;
-letter-spacing: 1px; font-size: 9px;
-padding: 7px 12px; cursor: pointer; font-weight: 700;
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-transition: all 0.15s;
+  border: 1px solid var(--ink-ghost); background: transparent;
+  color: var(--ink); text-transform: uppercase;
+  letter-spacing: 1px; font-size: 9px;
+  padding: 7px 12px; cursor: pointer; font-weight: 700;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  transition: all 0.15s;
 }
-.sbtn-outline:active { background: var(–bg-warm); }
+.sbtn-outline:active { background: var(--bg-warm); }
 
 .sbtn-dashed {
-border: 1px dashed var(–ink-ghost); background: transparent;
-color: var(–ink-faint); text-transform: uppercase;
-letter-spacing: 2px; font-size: 9px;
-padding: 14px; cursor: pointer; font-weight: 500;
-width: 100%; font-family: ‘Zen Kaku Gothic New’, sans-serif;
-transition: all 0.2s;
+  border: 1px dashed var(--ink-ghost); background: transparent;
+  color: var(--ink-faint); text-transform: uppercase;
+  letter-spacing: 2px; font-size: 9px;
+  padding: 14px; cursor: pointer; font-weight: 500;
+  width: 100%; font-family: 'Zen Kaku Gothic New', sans-serif;
+  transition: all 0.2s;
 }
-.sbtn-dashed:active { border-color: var(–ink); color: var(–ink); }
+.sbtn-dashed:active { border-color: var(--ink); color: var(--ink); }
 
 /* Inputs */
 .finp {
-width: 100%; padding: 10px 0; border: none;
-border-bottom: 1px solid var(–ink-ghost);
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-font-size: 15px; outline: none;
-transition: border-color 0.3s;
-background: transparent; border-radius: 0;
-color: var(–ink);
+  width: 100%; padding: 10px 0; border: none;
+  border-bottom: 1px solid var(--ink-ghost);
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  font-size: 15px; outline: none;
+  transition: border-color 0.3s;
+  background: transparent; border-radius: 0;
+  color: var(--ink);
 }
-.finp:focus { border-bottom-color: var(–ink); }
+.finp:focus { border-bottom-color: var(--ink); }
 .finp::placeholder { color: #ccc; }
 
 /* Type toggle */
-.type-toggle { display: flex; border: 1px solid var(–ink-ghost); }
+.type-toggle { display: flex; border: 1px solid var(--ink-ghost); }
 .type-btn {
-flex: 1; padding: 10px;
-font-size: 10px; font-weight: 700;
-text-transform: uppercase; letter-spacing: 1.5px;
-border: none; cursor: pointer;
-font-family: ‘Zen Kaku Gothic New’, sans-serif;
-transition: all 0.2s;
+  flex: 1; padding: 10px;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 1.5px;
+  border: none; cursor: pointer;
+  font-family: 'Zen Kaku Gothic New', sans-serif;
+  transition: all 0.2s;
 }
-.type-btn.active { background: var(–ink); color: #fff; }
-.type-btn.inactive { background: transparent; color: var(–ink-faint); }
+.type-btn.active { background: var(--ink); color: #fff; }
+.type-btn.inactive { background: transparent; color: var(--ink-faint); }
 
 /* Section title with shu underline */
 .section-title {
-font-family: ‘Shippori Mincho’, serif;
-font-size: 18px; font-weight: 800;
-color: var(–ink);
-position: relative; display: inline-block;
-padding-bottom: 6px;
+  font-family: 'Shippori Mincho', serif;
+  font-size: 18px; font-weight: 800;
+  color: var(--ink);
+  position: relative; display: inline-block;
+  padding-bottom: 6px;
 }
 .section-title::after {
-content: ‘’;
-position: absolute; bottom: 0; left: 0;
-width: 20px; height: 2px;
-background: var(–shu);
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 20px; height: 2px;
+  background: var(--shu);
 }
 
 /* Empty states with decorative SVG */
 .empty-state {
-padding: 40px 20px; text-align: center;
-color: var(–ink-faint); font-size: 10px;
-letter-spacing: 1.5px; line-height: 2.2;
+  padding: 40px 20px; text-align: center;
+  color: var(--ink-faint); font-size: 10px;
+  letter-spacing: 1.5px; line-height: 2.2;
 }
 
 /* Inline SVG illustrations */
 .sumi-art {
-display: block; margin: 0 auto 12px;
-opacity: 0.06;
+  display: block; margin: 0 auto 12px;
+  opacity: 0.06;
 }
 
 /* Settings */
 .setting-block { margin-bottom: 24px; }
 .setting-title {
-font-size: 8px; font-weight: 700;
-margin-bottom: 12px; color: var(–ink);
-text-transform: uppercase; letter-spacing: 2.5px;
+  font-size: 8px; font-weight: 700;
+  margin-bottom: 12px; color: var(--ink);
+  text-transform: uppercase; letter-spacing: 2.5px;
 }
 
 /* Toast */
 #toast {
-position: fixed; top: calc(var(–safe-top) + 10px);
-left: 50%; transform: translateX(-50%) translateY(-30px);
-background: var(–ink); color: #fff;
-padding: 9px 22px;
-font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
-z-index: 2000; opacity: 0; pointer-events: none;
-transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
-font-family: ‘Zen Kaku Gothic New’, sans-serif; font-weight: 500;
+  position: fixed; top: calc(var(--safe-top) + 10px);
+  left: 50%; transform: translateX(-50%) translateY(-30px);
+  background: var(--ink); color: #fff;
+  padding: 9px 22px;
+  font-size: 9px; letter-spacing: 2px; text-transform: uppercase;
+  z-index: 2000; opacity: 0; pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.16,1,0.3,1);
+  font-family: 'Zen Kaku Gothic New', sans-serif; font-weight: 500;
 }
 #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 </style>
@@ -960,3 +959,4 @@ window.onload=init;
 
 </body>
 </html>
+
