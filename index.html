@@ -36,7 +36,7 @@ overscroll-behavior: none;
 -webkit-text-size-adjust: 100%;
 }
 
-#app { display:flex; flex-direction:column; height:100%; position: relative; }
+#app { display:flex; flex-direction:column; height:100dvh; height:100%; position: relative; overflow: hidden; }
 
 /* ── HEADER JAPONÉS ── */
 #header {
@@ -190,12 +190,14 @@ margin-top: 5px;
 
 /* ── NAVEGACIÓN ── */
 #nav {
-background: var(–primary);
+background: #1a1a1a;
 display:flex;
 padding-bottom:var(–safe-area-bottom);
 z-index: 50;
 flex-shrink: 0;
 width: 100%;
+min-height: 55px;
+border-top: 1px solid #333;
 }
 .ntab {
 flex:1; padding: 15px 0;
