@@ -218,8 +218,15 @@ body::after {
 .cat-emoji { font-size: 14px; width: 24px; text-align: center; }
 .cat-label { font-size: 13px; font-weight: 400; }
 .cat-goal-badge { font-size: 8px; color: var(--shu); font-weight: 700; letter-spacing: 0.5px; opacity: 0.7; margin-left: 4px; }
-.cat-assigned { font-family: 'Noto Serif JP', serif; font-size: 11px; opacity: 0.35; min-width: 55px; text-align: right; }
+.cat-assigned { font-family: 'Noto Serif JP', serif; font-size: 11px; opacity: 0.45; min-width: 55px; text-align: right; cursor: pointer; padding: 4px 6px; margin: -4px 0; border-radius: 2px; transition: all 0.2s; }
+.cat-assigned:active { opacity: 1; background: var(--shu-faded); }
 .cat-available { font-family: 'Zen Old Mincho', serif; font-size: 14px; font-weight: 700; min-width: 80px; text-align: right; }
+.assign-info-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--ink-wash); margin-bottom: 6px; }
+.assign-info-label { font-size: 9px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.4; }
+.assign-info-value { font-family: 'Zen Old Mincho', serif; font-weight: 700; font-size: 14px; }
+.assign-mode-tabs { display: flex; gap: 0; margin-bottom: 18px; border: 1px solid var(--ink-wash-md); }
+.assign-mode-tab { flex: 1; padding: 10px; text-align: center; font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; background: transparent; border: none; font-family: 'Noto Serif JP', serif; color: var(--sumi); opacity: 0.4; transition: all 0.2s; }
+.assign-mode-tab.active { opacity: 1; background: var(--sumi); color: var(--washi); }
 .cat-available.neg { color: var(--shu); }
 
 .new-group-btn {
@@ -507,8 +514,35 @@ select.f-inp { cursor: pointer; }
   <div class="sheet" onclick="event.stopPropagation()">
     <h3 class="sheet-title">配分 Asignar</h3>
     <select id="a-cat" class="f-inp" style="margin-top:10px;"></select>
-    <input type="number" id="a-amt" class="f-inp" placeholder="0.00 €" step="0.01">
+    <input type="number" id="a-amt" class="f-inp" placeholder="Cantidad a añadir (€)" step="0.01">
+    <p class="f-hint">Se sumará al presupuesto asignado de este mes.</p>
     <button class="btn-sumi" onclick="confirmAssign()">Confirmar</button>
+  </div>
+</div>
+
+<div class="overlay" id="ov-assign-cat" onclick="closeSheet()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h3 class="sheet-title" id="ac-title">配分 Asignar</h3>
+    <div id="ac-cat-name" style="font-family:'Zen Old Mincho',serif;font-weight:900;font-size:15px;margin-bottom:18px;"></div>
+    <div class="assign-info-row">
+      <span class="assign-info-label">Asignado este mes</span>
+      <span class="assign-info-value" id="ac-current">0 €</span>
+    </div>
+    <div class="assign-info-row">
+      <span class="assign-info-label">Disponible acumulado</span>
+      <span class="assign-info-value" id="ac-avail">0 €</span>
+    </div>
+    <div class="assign-info-row" style="border:none;">
+      <span class="assign-info-label">Gastado este mes</span>
+      <span class="assign-info-value" id="ac-spent">0 €</span>
+    </div>
+    <div class="assign-mode-tabs">
+      <button class="assign-mode-tab active" id="tab-set" onclick="setAssignMode('set')">Fijar total</button>
+      <button class="assign-mode-tab" id="tab-add" onclick="setAssignMode('add')">Añadir</button>
+    </div>
+    <input type="number" id="ac-amt" class="f-inp" placeholder="0.00 €" step="0.01">
+    <p class="f-hint" id="ac-hint">Reemplaza la asignación de este mes por esta cantidad.</p>
+    <button class="btn-sumi" onclick="confirmAssignCat()">Confirmar</button>
   </div>
 </div>
 
@@ -648,7 +682,7 @@ function renderBudget() {
               <span class="cat-emoji">${c.emoji}</span>
               <span class="cat-label">${esc(c.name)}${goalBadge}</span>
             </div>
-            <div class="cat-assigned">${fmt(DB.assignments[mk]?.[c.id] || 0)}</div>
+            <div class="cat-assigned" onclick="event.stopPropagation();openAssignCat('${c.id}')">${fmt(DB.assignments[mk]?.[c.id] || 0)}</div>
             <div class="cat-available ${av < 0 ? 'neg' : 'pos'}">${fmt(av)}</div>
           </div>
         `;
@@ -1059,6 +1093,56 @@ function deleteCat() {
 }
 
 /* ─── ASSIGN ─── */
+let assignMode = 'set'; // 'set' or 'add'
+let assignCatId = null;
+
+function setAssignMode(mode) {
+  assignMode = mode;
+  document.getElementById('tab-set').className = 'assign-mode-tab' + (mode === 'set' ? ' active' : '');
+  document.getElementById('tab-add').className = 'assign-mode-tab' + (mode === 'add' ? ' active' : '');
+  document.getElementById('ac-hint').innerText = mode === 'set'
+    ? 'Reemplaza la asignación de este mes por esta cantidad.'
+    : 'Suma (o resta con negativo) a la asignación actual.';
+  document.getElementById('ac-amt').placeholder = mode === 'set' ? 'Nueva asignación total (€)' : 'Cantidad a añadir (€)';
+}
+
+function openAssignCat(cid) {
+  assignCatId = cid;
+  const cat = findCat(cid);
+  if (!cat) return;
+  const mk = getMk(curMonth);
+  const currentAssign = DB.assignments[mk]?.[cid] || 0;
+  const avail = getAvail(cid, curMonth);
+  const spent = DB.txs.filter(t => t.cat === cid && t.type === 'expense' && getMk(new Date(t.date)) === mk).reduce((s, t) => s + t.amt, 0);
+
+  document.getElementById('ac-cat-name').innerText = cat.emoji + ' ' + cat.name;
+  document.getElementById('ac-current').innerText = fmt(currentAssign);
+  document.getElementById('ac-avail').innerText = fmt(avail);
+  document.getElementById('ac-avail').className = 'assign-info-value' + (avail < 0 ? ' neg' : '');
+  document.getElementById('ac-spent').innerText = fmt(spent);
+  document.getElementById('ac-amt').value = '';
+  setAssignMode('set');
+  openSheetDirect('assign-cat');
+}
+
+function confirmAssignCat() {
+  const val = parseFloat(document.getElementById('ac-amt').value);
+  if (isNaN(val)) return;
+  const mk = getMk(curMonth);
+  if (!DB.assignments[mk]) DB.assignments[mk] = {};
+
+  if (assignMode === 'set') {
+    // Set the exact value (allow 0 to clear)
+    if (val < 0) return;
+    DB.assignments[mk][assignCatId] = val;
+  } else {
+    // Add/subtract from current
+    DB.assignments[mk][assignCatId] = (DB.assignments[mk][assignCatId] || 0) + val;
+  }
+  closeSheet(); updateUI();
+}
+
+// Quick assign from "Disponible" button — generic category picker
 function confirmAssign() {
   const cid = document.getElementById('a-cat').value;
   const a = parseFloat(document.getElementById('a-amt').value);
