@@ -176,6 +176,7 @@ body::after {
 .trip-item:not(:last-child)::after { content: ''; position: absolute; right: 0; top: 20%; height: 60%; width: 1px; background: var(--ink-wash-md); }
 .trip-label { font-size: 7px; text-transform: uppercase; letter-spacing: 2px; opacity: 0.35; display: block; margin-bottom: 6px; }
 .trip-value { font-family: 'Zen Old Mincho', serif; font-size: 14px; font-weight: 700; }
+.trip-value.expense-pill { color: var(--shu); }
 
 /* ─── AVAILABLE ─── */
 .available-scroll {
@@ -188,9 +189,11 @@ body::after {
 #to-assign { font-family: 'Zen Old Mincho', serif; font-size: 38px; font-weight: 900; line-height: 1; cursor: pointer; letter-spacing: -1px; transition: color 0.3s; }
 #to-assign:active { opacity: 0.5; }
 #to-assign.deficit { color: var(--shu); }
+.av-tap-hint { font-size: 7px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-top: 8px; opacity: 0.15; }
 .age-block { text-align: right; opacity: 0.7; }
 #age-num { font-family: 'Zen Old Mincho', serif; font-size: 28px; font-weight: 900; line-height: 1; }
 .age-kanji { font-size: 7px; letter-spacing: 2px; display: block; margin-top: 4px; opacity: 0.5; text-transform: uppercase; }
+.age-sub { font-size: 6px; letter-spacing: 1.5px; display: block; margin-top: 2px; opacity: 0.25; text-transform: uppercase; }
 
 /* ─── PANELS ─── */
 .panel { display: none; }
@@ -238,7 +241,22 @@ body::after {
 .new-group-btn:active { opacity: 1; color: var(--shu); }
 
 /* ─── TRANSACTIONS ─── */
-.tx-entry { padding: 16px 0; display: flex; justify-content: space-between; align-items: flex-start; cursor: pointer; border-bottom: 1px solid var(--ink-wash); transition: background 0.2s; }
+.tx-summary-bar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0 14px; margin-bottom: 4px;
+  border-bottom: 1.5px solid var(--sumi); font-size: 8px;
+  text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.5;
+}
+.tx-summary-bar .pos { color: var(--sumi); font-weight: 700; }
+.tx-summary-bar .neg { color: var(--shu); font-weight: 700; }
+
+.tx-date-header {
+  font-family: 'Zen Old Mincho', serif; font-size: 9px; font-weight: 900;
+  letter-spacing: 2px; padding: 18px 0 6px; opacity: 0.3;
+  border-bottom: 1px solid var(--ink-wash);
+}
+
+.tx-entry { padding: 14px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; border-bottom: 1px solid var(--ink-wash); transition: background 0.2s; }
 .tx-entry:active { background: var(--shu-faded); }
 .tx-details { display: flex; flex-direction: column; gap: 4px; }
 .tx-payee { font-family: 'Zen Old Mincho', serif; font-weight: 700; font-size: 15px; }
@@ -246,7 +264,10 @@ body::after {
 .tx-amount { font-family: 'Zen Old Mincho', serif; font-size: 16px; font-weight: 900; white-space: nowrap; }
 .tx-amount.neg { color: var(--shu); }
 .tx-amount.adj { color: var(--sumi); opacity: 0.6; }
-.empty-scroll { text-align: center; padding: 80px 20px; opacity: 0.2; font-style: italic; font-size: 13px; }
+.empty-scroll {
+  text-align: center; padding: 60px 20px; opacity: 0.18; font-size: 13px;
+  font-family: 'Zen Old Mincho', serif; font-weight: 400;
+}
 
 /* ─── GOALS ─── */
 .goal-card {
@@ -271,6 +292,14 @@ body::after {
 .goal-current { font-family: 'Zen Old Mincho', serif; font-weight: 900; }
 .goal-target { opacity: 0.25; font-size: 11px; margin-left: 4px; }
 .goal-complete-label { font-size: 10px; color: var(--shu); font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-top: 6px; text-align: right; }
+.goal-deposit-btn {
+  width: 100%; padding: 10px; background: transparent;
+  border: 1.5px solid var(--ink-wash-md);
+  font-family: 'Zen Old Mincho', serif; font-size: 11px; font-weight: 900;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  cursor: pointer; color: var(--sumi); transition: all 0.2s;
+}
+.goal-deposit-btn:active { border-color: var(--sumi); background: var(--shu-faded); }
 
 .goals-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 1px solid var(--ink-wash-md); }
 .goals-title { font-family: 'Zen Old Mincho', serif; font-weight: 900; font-size: 18px; letter-spacing: 1px; }
@@ -288,6 +317,20 @@ body::after {
 }
 #fab:active { transform: scale(0.92) rotate(-2deg); }
 #fab::before { content: ''; position: absolute; inset: 3px; border: 1.5px solid rgba(245, 240, 232, 0.3); }
+
+#undo-fab {
+  position: fixed; left: calc(56px + 20px); bottom: calc(var(--safe-bottom) + 22px);
+  height: 40px; padding: 0 16px;
+  background: var(--washi); color: var(--sumi); border: 1.5px solid var(--sumi);
+  font-family: 'Zen Old Mincho', serif; font-size: 11px; font-weight: 900;
+  letter-spacing: 1px; display: flex; align-items: center; gap: 6px;
+  z-index: 200; cursor: pointer;
+  box-shadow: 1px 1px 0 var(--ink-wash-dk);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0; pointer-events: none; transform: translateY(10px);
+}
+#undo-fab.visible { opacity: 1; pointer-events: auto; transform: translateY(0); }
+#undo-fab:active { background: var(--sumi); color: var(--washi); }
 
 /* ─── MODALS ─── */
 .overlay { position: fixed; inset: 0; background: rgba(26,26,26,0.5); z-index: 300; opacity: 0; pointer-events: none; transition: opacity 0.4s; backdrop-filter: blur(4px); }
@@ -384,10 +427,12 @@ select.f-inp { cursor: pointer; }
   <div>
     <span class="av-label">Disponible para asignar</span>
     <div id="to-assign" onclick="openSheet('assign')">0,00 €</div>
+    <span class="av-tap-hint">Toca para asignar →</span>
   </div>
   <div class="age-block">
     <div id="age-num">0</div>
     <span class="age-kanji">日の命</span>
+    <span class="age-sub">Edad del dinero</span>
   </div>
 </div>
 
@@ -402,18 +447,29 @@ select.f-inp { cursor: pointer; }
 </div>
 <div id="panel-settings" class="panel">
   <h2 class="settings-title">設定 Ajustes</h2>
-  <button class="btn-sumi" onclick="exportData()">Exportar Copia JSON</button>
-  <div style="height:12px"></div>
-  <button class="btn-sumi" onclick="document.getElementById('imp-file').click()">Importar Datos</button>
+
+  <span class="f-label" style="margin-bottom:14px;">Copia de seguridad</span>
+  <button class="btn-sumi" onclick="exportData()">Exportar a Archivo</button>
+  <div style="height:8px"></div>
+  <button class="btn-outline" onclick="document.getElementById('imp-file').click()">Importar Datos</button>
   <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importData(event)">
-  <div style="height:30px"></div>
+
+  <div style="height:35px;border-bottom:1px solid var(--ink-wash);margin-bottom:25px;"></div>
+
+  <span class="f-label" style="margin-bottom:14px;">Zona de peligro</span>
   <button class="btn-shu" onclick="confirmAction('¿Borrar todos los datos?<br><span style=font-size:11px;opacity:0.6>Esta acción no se puede deshacer. Exporta primero si quieres conservar una copia.</span>', resetApp)">Borrar Todo</button>
+
+  <div style="margin-top:50px;text-align:center;opacity:0.15;">
+    <div style="font-family:'Zen Old Mincho',serif;font-size:20px;font-weight:900;">間</div>
+    <div style="font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-top:6px;">Ma Budget · v8</div>
+  </div>
 </div>
 ```
 
   </main>
 
 <button id="fab" onclick="openNewTx()">＋</button>
+<button id="undo-fab" onclick="undoAction()">戻す</button>
 
 </div>
 
@@ -504,6 +560,11 @@ select.f-inp { cursor: pointer; }
     <input type="number" id="n-l-target" class="f-inp" placeholder="Importe Objetivo (€)" step="0.01">
 
 ```
+<div id="goal-edit-progress-wrap" style="display:none;margin-bottom:18px;padding:12px 0;border-bottom:1px solid var(--ink-wash);">
+  <span class="f-label">Progreso actual</span>
+  <div id="goal-edit-progress" style="font-size:14px;margin-top:4px;"></div>
+</div>
+
 <span class="f-label">Modo de seguimiento</span>
 <select id="n-l-mode" class="f-inp" onchange="onGoalModeChange()">
   <option value="linked">Vinculado a categoría</option>
@@ -599,6 +660,46 @@ let DB = { groups: [], txs: [], assignments: {}, goals: [] };
 let curMonth = new Date();
 let activeCatId = null, activeGroupId = null, activeTxId = null, activeGoalId = null;
 let adjustSign = 1; // 1 = positive, -1 = negative
+let undoSnapshot = null; // JSON string of DB before last mutation
+let undoTimer = null; // auto-hide timer
+
+/** Save a snapshot before any mutation */
+function pushUndo() {
+  undoSnapshot = JSON.stringify(DB);
+  showUndoButton();
+}
+
+function showUndoButton() {
+  clearTimeout(undoTimer);
+  document.getElementById('undo-fab').classList.add('visible');
+  // Auto-hide after 15 seconds
+  undoTimer = setTimeout(hideUndoButton, 15000);
+}
+
+function hideUndoButton() {
+  document.getElementById('undo-fab').classList.remove('visible');
+  clearTimeout(undoTimer);
+}
+
+function undoAction() {
+  if (!undoSnapshot) return;
+  confirmAction('¿Deshacer la última acción?', function() {
+    try {
+      DB = JSON.parse(undoSnapshot);
+      undoSnapshot = null;
+      hideUndoButton();
+      updateUI();
+    } catch (e) {
+      showAlert('Error al deshacer.');
+    }
+  });
+}
+
+/** Commit a mutation: close → update. pushUndo() must be called BEFORE mutating DB. */
+function commit() {
+  closeSheet();
+  updateUI();
+}
 
 /* ─── INIT ─── */
 function init() {
@@ -817,30 +918,51 @@ function updateUI() {
 function renderBudget() {
   const mk = getMk(curMonth);
   const container = document.getElementById('budget-content');
-  let h = DB.groups.map(g => `
+
+  // Column headers
+  let h = `<div style="display:flex;justify-content:flex-end;padding:0 0 8px;margin-bottom:4px;border-bottom:1px solid var(--ink-wash);">
+    <span style="font-size:7px;text-transform:uppercase;letter-spacing:1.5px;opacity:0.3;min-width:55px;text-align:right;padding-right:6px;">Asignado</span>
+    <span style="font-size:7px;text-transform:uppercase;letter-spacing:1.5px;opacity:0.3;min-width:80px;text-align:right;">Disponible</span>
+  </div>`;
+
+  h += DB.groups.map(g => {
+    let groupAssigned = 0, groupAvail = 0;
+    const catHtml = g.cats.map(c => {
+      const av = getAvail(c.id, curMonth);
+      const assigned = DB.assignments[mk]?.[c.id] || 0;
+      groupAssigned += assigned;
+      groupAvail += av;
+      const linkedGoal = findGoalByCat(c.id);
+      const goalBadge = linkedGoal ? `<span class="cat-goal-badge">🎯 ${esc(linkedGoal.name)}</span>` : '';
+      return `
+        <div class="cat-row">
+          <div class="cat-identity" onclick="openEditCat('${c.id}')">
+            <span class="cat-emoji">${c.emoji}</span>
+            <span class="cat-label">${esc(c.name)}${goalBadge}</span>
+          </div>
+          <div class="cat-assigned" onclick="event.stopPropagation();openAssignCat('${c.id}')">${fmt(assigned)}</div>
+          <div class="cat-available ${av < -0.004 ? 'neg' : 'pos'}">${fmt(av)}</div>
+        </div>
+      `;
+    }).join('');
+
+    const groupTotal = g.cats.length > 1 ? `
+      <div style="display:flex;justify-content:flex-end;padding:6px 0 2px;opacity:0.3;">
+        <span style="font-size:9px;font-family:'Zen Old Mincho',serif;font-weight:700;min-width:55px;text-align:right;padding-right:6px;">${fmt(groupAssigned)}</span>
+        <span style="font-size:9px;font-family:'Zen Old Mincho',serif;font-weight:700;min-width:80px;text-align:right;">${fmt(groupAvail)}</span>
+      </div>` : '';
+
+    return `
     <div class="scroll-group">
       <div class="group-header">
         <span class="group-name" onclick="openEditGroup('${g.id}')">${esc(g.name)}</span>
         <button class="add-cat-btn" onclick="openAddCat('${g.id}')">＋</button>
       </div>
-      ${g.cats.map(c => {
-        const av = getAvail(c.id, curMonth);
-        const assigned = DB.assignments[mk]?.[c.id] || 0;
-        const linkedGoal = findGoalByCat(c.id);
-        const goalBadge = linkedGoal ? `<span class="cat-goal-badge">🎯 ${esc(linkedGoal.name)}</span>` : '';
-        return `
-          <div class="cat-row">
-            <div class="cat-identity" onclick="openEditCat('${c.id}')">
-              <span class="cat-emoji">${c.emoji}</span>
-              <span class="cat-label">${esc(c.name)}${goalBadge}</span>
-            </div>
-            <div class="cat-assigned" onclick="event.stopPropagation();openAssignCat('${c.id}')">${fmt(assigned)}</div>
-            <div class="cat-available ${av < -0.004 ? 'neg' : 'pos'}">${fmt(av)}</div>
-          </div>
-        `;
-      }).join('')}
+      ${catHtml}
+      ${groupTotal}
     </div>
-  `).join('');
+  `;
+  }).join('');
   h += `<button class="new-group-btn" onclick="openSheet('new-group')">＋ Nuevo Grupo</button>`;
   container.innerHTML = h;
 }
@@ -849,7 +971,6 @@ function renderBudget() {
 function renderTxs() {
   const mk = getMk(curMonth);
   const filtered = DB.txs.filter(t => t.type !== 'adjustment' && getMk(t.date) === mk).sort((a, b) => {
-    // Sort by date desc, then by id desc for same date
     const da = new Date(a.date), db = new Date(b.date);
     if (db - da !== 0) return db - da;
     return b.id - a.id;
@@ -859,31 +980,51 @@ function renderTxs() {
     container.innerHTML = '<p class="empty-scroll">白紙 — Papel en blanco.</p>';
     return;
   }
-  container.innerHTML = filtered.map(t => {
-    let catName, amtClass, amtPrefix;
-    if (t.type === 'adjustment') {
-      catName = '調整 Ajuste';
-      amtClass = 'adj';
-      amtPrefix = t.amt >= 0 ? '+' : '';
-    } else if (t.type === 'expense') {
-      catName = t.cat ? (findCat(t.cat)?.name || 'Sin categoría') : 'Sin categoría';
-      amtClass = 'neg';
-      amtPrefix = '−';
-    } else {
-      catName = 'Ingreso';
-      amtClass = 'pos';
-      amtPrefix = '+';
-    }
-    return `
-      <div class="tx-entry" onclick="openEditTx('${t.id}')">
-        <div class="tx-details">
-          <div class="tx-payee">${esc(t.payee || 'Sin concepto')}</div>
-          <div class="tx-meta">${esc(catName)} · ${t.date}</div>
+
+  // Group by date
+  const groups = {};
+  filtered.forEach(t => {
+    if (!groups[t.date]) groups[t.date] = [];
+    groups[t.date].push(t);
+  });
+
+  const totalInc = filtered.filter(t => t.type === 'income').reduce((s, t) => s + t.amt, 0);
+  const totalExp = filtered.filter(t => t.type === 'expense').reduce((s, t) => s + t.amt, 0);
+
+  let html = `<div class="tx-summary-bar">
+    <span>${filtered.length} movimiento${filtered.length !== 1 ? 's' : ''}</span>
+    <span><span class="pos">+${fmt(totalInc)}</span>  <span class="neg">−${fmt(totalExp)}</span></span>
+  </div>`;
+
+  Object.keys(groups).forEach(date => {
+    const d = new Date(date + 'T00:00:00');
+    const dayLabel = d.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).toUpperCase();
+    html += `<div class="tx-date-header">${dayLabel}</div>`;
+
+    groups[date].forEach(t => {
+      let catName, amtClass, amtPrefix;
+      if (t.type === 'expense') {
+        catName = t.cat ? (findCat(t.cat)?.name || 'Sin categoría') : 'Sin categoría';
+        amtClass = 'neg';
+        amtPrefix = '−';
+      } else {
+        catName = 'Ingreso';
+        amtClass = 'pos';
+        amtPrefix = '+';
+      }
+      html += `
+        <div class="tx-entry" onclick="openEditTx('${t.id}')">
+          <div class="tx-details">
+            <div class="tx-payee">${esc(t.payee || 'Sin concepto')}</div>
+            <div class="tx-meta">${esc(catName)}</div>
+          </div>
+          <div class="tx-amount ${amtClass}">${amtPrefix}${fmt(Math.abs(t.amt))}</div>
         </div>
-        <div class="tx-amount ${amtClass}">${amtPrefix}${fmt(Math.abs(t.amt))}</div>
-      </div>
-    `;
-  }).join('');
+      `;
+    });
+  });
+
+  container.innerHTML = html;
 }
 
 /* ─── RENDER: GOALS ─── */
@@ -905,9 +1046,10 @@ function renderGoals() {
     } else if (g.cid) {
       const cat = findCat(g.cid);
       if (cat) {
-        linkLabel = '🔗 ' + esc(cat.name);
+        const catAvail = getAvail(g.cid, curMonth);
+        linkLabel = '🔗 ' + esc(cat.name) + ` <span style="opacity:0.5">(disponible: ${fmt(catAvail)})</span>`;
       } else {
-        linkLabel = '⚠ Categoría eliminada';
+        linkLabel = '⚠ Categoría eliminada — edita para revincular';
         linkClass = ' warn';
       }
     } else {
@@ -931,8 +1073,8 @@ function renderGoals() {
       }
     }
 
-    const depositBtn = g.mode === 'manual' && !isComplete
-      ? `<div style="margin-top:8px;text-align:right;"><span style="font-size:10px;opacity:0.4;cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();openGoalDeposit('${g.id}')">Depositar / Retirar</span></div>`
+    const depositBtn = g.mode === 'manual'
+      ? `<div style="margin-top:12px;"><button class="goal-deposit-btn" onclick="event.stopPropagation();openGoalDeposit('${g.id}')">預金 Depositar / Retirar</button></div>`
       : '';
 
     return `
@@ -963,12 +1105,16 @@ function renderGoals() {
 function updatePills() {
   const mk = getMk(curMonth);
   const inc = DB.txs.filter(t => t.type === 'income' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
-  const exp = DB.txs.filter(t => t.type === 'expense' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
   const adj = DB.txs.filter(t => t.type === 'adjustment' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
+  const exp = DB.txs.filter(t => t.type === 'expense' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
   const asig = Object.values(DB.assignments[mk] || {}).reduce((s, v) => s + v, 0);
-  // Show income + adjustments together in the "Ingresos" pill for clarity
-  document.getElementById('p-inc').innerText = fmt(inc + adj);
-  document.getElementById('p-exp').innerText = fmt(exp);
+
+  const incEl = document.getElementById('p-inc');
+  const expEl = document.getElementById('p-exp');
+  incEl.innerText = fmt(inc + adj);
+  incEl.className = 'trip-value' + ((inc + adj) > 0 ? '' : '');
+  expEl.innerText = fmt(exp);
+  expEl.className = 'trip-value' + (exp > 0 ? ' expense-pill' : '');
   document.getElementById('p-asg').innerText = fmt(asig);
 }
 
@@ -1030,6 +1176,7 @@ function saveTx(type) {
   const date = document.getElementById('f-date').value;
   if (!date) return;
 
+  pushUndo();
   if (type === 'adjustment') {
     DB.txs.push({
       id: Date.now(),
@@ -1047,7 +1194,7 @@ function saveTx(type) {
       date: date
     });
   }
-  closeSheet(); updateUI();
+  commit();
 }
 
 function updateTx() {
@@ -1058,6 +1205,7 @@ function updateTx() {
   const newDate = document.getElementById('f-date').value;
   if (!newDate) return;
 
+  pushUndo();
   if (t.type === 'adjustment') {
     t.amt = newAmt * (t.amt >= 0 ? 1 : -1); // preserve original sign
   } else {
@@ -1068,13 +1216,14 @@ function updateTx() {
   }
   t.payee = document.getElementById('f-payee').value.trim();
   t.date = newDate;
-  closeSheet(); updateUI();
+  commit();
 }
 
 function deleteTx() {
   confirmAction('¿Borrar este registro?', function() {
+    pushUndo();
     DB.txs = DB.txs.filter(x => String(x.id) !== String(activeTxId));
-    closeSheet(); updateUI();
+    commit();
   });
 }
 
@@ -1093,8 +1242,10 @@ function openNewGoal() {
   document.getElementById('n-l-mode').value = 'linked';
   document.getElementById('goal-create-box').style.display = 'block';
   document.getElementById('goal-edit-box').style.display = 'none';
+  document.getElementById('goal-edit-progress-wrap').style.display = 'none';
+  populateCatSelect(document.getElementById('n-l-cat'), false);
   onGoalModeChange();
-  openSheet('goal');
+  openSheetDirect('goal');
 }
 
 function openEditGoal(id) {
@@ -1107,10 +1258,21 @@ function openEditGoal(id) {
   document.getElementById('n-l-mode').value = g.mode || 'linked';
   document.getElementById('goal-create-box').style.display = 'none';
   document.getElementById('goal-edit-box').style.display = 'flex';
-  onGoalModeChange();
-  openSheet('goal');
+
+  // Populate category select BEFORE setting value
+  populateCatSelect(document.getElementById('n-l-cat'), false);
   document.getElementById('n-l-cat').value = g.cid || '';
   document.getElementById('n-l-date').value = g.date || '';
+
+  // Show current progress info
+  const progress = getGoalProgress(g);
+  const pct = g.target > 0 ? Math.min(100, (progress / g.target) * 100).toFixed(1) : 0;
+  document.getElementById('goal-edit-progress').innerHTML =
+    `<span style="font-family:'Zen Old Mincho',serif;font-weight:900;">${fmt(progress)}</span> <span style="opacity:0.35">/ ${fmt(g.target)}</span> <span style="color:var(--shu);font-weight:700;">(${pct}%)</span>`;
+  document.getElementById('goal-edit-progress-wrap').style.display = 'block';
+
+  onGoalModeChange();
+  openSheetDirect('goal');
 }
 
 function saveGoal() {
@@ -1130,13 +1292,14 @@ function saveGoal() {
     }
   }
 
+  pushUndo();
   DB.goals.push({
     id: Date.now(), name, target, date,
     mode,
     cid: mode === 'linked' ? cid : '',
     saved: mode === 'manual' ? 0 : undefined
   });
-  closeSheet(); updateUI();
+  commit();
 }
 
 function updateGoal() {
@@ -1157,22 +1320,26 @@ function updateGoal() {
     }
   }
 
+  pushUndo();
   const oldMode = g.mode;
   g.name = name;
   g.target = target;
   g.mode = mode;
   g.cid = mode === 'linked' ? cid : '';
   g.date = document.getElementById('n-l-date').value;
-  if (mode === 'manual' && oldMode !== 'manual') g.saved = 0;
-  if (mode === 'linked') delete g.saved;
+  // When switching to manual, only init saved if it doesn't exist yet
+  if (mode === 'manual' && g.saved === undefined) g.saved = 0;
+  // When switching to linked, keep saved in case they switch back
+  // (it just won't be used while in linked mode)
 
-  closeSheet(); updateUI();
+  commit();
 }
 
 function deleteGoalAction() {
   confirmAction('¿Eliminar esta meta?', function() {
+    pushUndo();
     DB.goals = DB.goals.filter(x => String(x.id) !== String(activeGoalId));
-    closeSheet(); updateUI();
+    commit();
   });
 }
 
@@ -1181,8 +1348,11 @@ function openGoalDeposit(id) {
   activeGoalId = id;
   const g = DB.goals.find(x => String(x.id) === String(id));
   if (!g || g.mode !== 'manual') return;
+  const saved = g.saved || 0;
+  const pct = g.target > 0 ? Math.min(100, (saved / g.target) * 100) : 0;
   document.getElementById('deposit-goal-name').innerText = g.name;
-  document.getElementById('deposit-goal-progress').innerText = `${fmt(g.saved || 0)} de ${fmt(g.target)}`;
+  document.getElementById('deposit-goal-progress').innerHTML =
+    `${fmt(saved)} de ${fmt(g.target)} — <strong>${pct.toFixed(1)}%</strong>`;
   document.getElementById('dep-amt').value = '';
   openSheetDirect('goal-deposit');
 }
@@ -1192,8 +1362,9 @@ function doGoalDeposit(sign) {
   if (!g || g.mode !== 'manual') return;
   const amt = parseFloat(document.getElementById('dep-amt').value);
   if (!amt || isNaN(amt) || amt <= 0) return;
+  pushUndo();
   g.saved = Math.max(0, (g.saved || 0) + (amt * sign));
-  closeSheet(); updateUI();
+  commit();
 }
 
 /* ─── GROUPS ─── */
@@ -1210,8 +1381,9 @@ function updateGroup() {
   if (!g) return;
   const newName = document.getElementById('e-g-name').value.trim();
   if (!newName) return;
+  pushUndo();
   g.name = newName;
-  closeSheet(); updateUI();
+  commit();
 }
 
 function deleteGroup() {
@@ -1223,17 +1395,19 @@ function deleteGroup() {
     msg += `<br><br><span style="font-size:11px;opacity:0.6">Las metas vinculadas "${names}" perderán su vínculo.</span>`;
   }
   confirmAction(msg, function() {
+    pushUndo();
     affectedGoals.forEach(g => { g.cid = ''; });
     DB.groups = DB.groups.filter(x => x.id !== activeGroupId);
-    closeSheet(); updateUI();
+    commit();
   });
 }
 
 function addGroup() {
   const n = document.getElementById('n-g-name').value.trim();
   if (!n) return;
+  pushUndo();
   DB.groups.push({ id: 'g' + Date.now(), name: n, cats: [] });
-  closeSheet(); updateUI();
+  commit();
 }
 
 /* ─── CATEGORIES ─── */
@@ -1250,8 +1424,9 @@ function addCat() {
   if (!n) return;
   const group = DB.groups.find(g => g.id === activeGroupId);
   if (!group) return;
+  pushUndo();
   group.cats.push({ id: 'c' + Date.now(), name: n, emoji: e || '📝' });
-  closeSheet(); updateUI();
+  commit();
 }
 
 function openEditCat(id) {
@@ -1276,9 +1451,10 @@ function updateCat() {
   if (!c) return;
   const newName = document.getElementById('e-c-name').value.trim();
   if (!newName) return;
+  pushUndo();
   c.name = newName;
   c.emoji = document.getElementById('e-c-emoji').value.trim() || '📝';
-  closeSheet(); updateUI();
+  commit();
 }
 
 function deleteCat() {
@@ -1288,9 +1464,10 @@ function deleteCat() {
     msg = `¿Borrar categoría?<br><br><span style="font-size:11px;opacity:0.6">La meta "${linkedGoal.name}" perderá su vínculo.</span>`;
   }
   confirmAction(msg, function() {
+    pushUndo();
     if (linkedGoal) { linkedGoal.cid = ''; }
     DB.groups.forEach(g => g.cats = g.cats.filter(x => x.id !== activeCatId));
-    closeSheet(); updateUI();
+    commit();
   });
 }
 
@@ -1330,6 +1507,7 @@ function openAssignCat(cid) {
 function confirmAssignCat() {
   const val = parseFloat(document.getElementById('ac-amt').value);
   if (isNaN(val)) return;
+  pushUndo();
   const mk = getMk(curMonth);
   if (!DB.assignments[mk]) DB.assignments[mk] = {};
 
@@ -1339,7 +1517,7 @@ function confirmAssignCat() {
   } else {
     DB.assignments[mk][assignCatId] = (DB.assignments[mk][assignCatId] || 0) + val;
   }
-  closeSheet(); updateUI();
+  commit();
 }
 
 function confirmAssign() {
@@ -1347,15 +1525,15 @@ function confirmAssign() {
   const a = parseFloat(document.getElementById('a-amt').value);
   const mk = getMk(curMonth);
   if (!cid || !a || isNaN(a)) return;
+  pushUndo();
   if (!DB.assignments[mk]) DB.assignments[mk] = {};
   DB.assignments[mk][cid] = (DB.assignments[mk][cid] || 0) + a;
-  closeSheet(); updateUI();
+  commit();
 }
 
 /* ─── SHEETS ─── */
 function openSheet(id) {
   if (id === 'tx') populateCatSelect(document.getElementById('f-cat'), true);
-  if (id === 'goal') populateCatSelect(document.getElementById('n-l-cat'), false);
   if (id === 'assign') {
     populateCatSelect(document.getElementById('a-cat'), false);
     document.getElementById('a-amt').value = '';
@@ -1384,9 +1562,9 @@ function confirmAction(msg, callback) {
   cancelBtn.textContent = 'Cancelar';
   cancelBtn.style.display = 'block';
   yesBtn.onclick = function() {
+    const cb = confirmCallback;
     closeConfirm();
-    if (confirmCallback) confirmCallback();
-    confirmCallback = null;
+    if (cb) cb();
   };
   document.getElementById('ov-confirm').classList.add('open');
 }
