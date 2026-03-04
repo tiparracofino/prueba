@@ -245,6 +245,7 @@ body::after {
 .tx-meta { font-size: 8px; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.3; }
 .tx-amount { font-family: 'Zen Old Mincho', serif; font-size: 16px; font-weight: 900; white-space: nowrap; }
 .tx-amount.neg { color: var(--shu); }
+.tx-amount.adj { color: var(--sumi); opacity: 0.6; }
 .empty-scroll { text-align: center; padding: 80px 20px; opacity: 0.2; font-style: italic; font-size: 13px; }
 
 /* ─── GOALS ─── */
@@ -313,6 +314,8 @@ body::after {
 .btn-shu:active { background: var(--shu); color: var(--washi); }
 .btn-expense { background: var(--shu); color: var(--washi); border: none; padding: 16px; width: 100%; font-family: 'Zen Old Mincho', serif; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: opacity 0.2s; }
 .btn-expense:active { opacity: 0.7; }
+.btn-adjust { background: transparent; color: var(--sumi); border: 1.5px solid var(--sumi); padding: 16px; width: 100%; font-family: 'Zen Old Mincho', serif; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; font-size: 12px; cursor: pointer; transition: all 0.2s; }
+.btn-adjust:active { background: var(--sumi); color: var(--washi); }
 .btn-outline { background: transparent; color: var(--sumi); border: 1.5px solid var(--ink-wash-md); padding: 14px; width: 100%; font-family: 'Zen Old Mincho', serif; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; font-size: 11px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
 .btn-outline:active { border-color: var(--sumi); }
 
@@ -323,6 +326,25 @@ body::after {
 #main-scroll::-webkit-scrollbar-track { background: transparent; }
 #main-scroll::-webkit-scrollbar-thumb { background: var(--ink-wash-md); }
 select.f-inp { cursor: pointer; }
+
+/* ─── TX CREATE BUTTONS ─── */
+.tx-btn-row { display: flex; gap: 10px; }
+.tx-btn-row > button { flex: 1; }
+.tx-adjust-row { margin-top: 8px; }
+.tx-adjust-hint { font-size: 9px; opacity: 0.35; text-align: center; margin-top: -4px; margin-bottom: 14px; letter-spacing: 0.5px; }
+
+/* ─── ADJUST SIGN TOGGLE ─── */
+.adjust-sign-row { display: flex; align-items: center; gap: 0; margin-bottom: 16px; border: 1.5px solid var(--ink-wash-md); }
+.adjust-sign-btn {
+  flex: 1; padding: 11px; text-align: center;
+  font-family: 'Zen Old Mincho', serif; font-size: 12px; font-weight: 900;
+  letter-spacing: 1.5px; cursor: pointer;
+  background: transparent; border: none; color: var(--sumi); opacity: 0.35;
+  transition: all 0.2s;
+}
+.adjust-sign-btn.active-pos { opacity: 1; background: var(--sumi); color: var(--washi); }
+.adjust-sign-btn.active-neg { opacity: 1; background: var(--shu); color: var(--washi); }
+.adjust-sign-sep { width: 1px; height: 22px; background: var(--ink-wash-md); flex-shrink: 0; }
 </style>
 
 </head>
@@ -385,7 +407,7 @@ select.f-inp { cursor: pointer; }
   <button class="btn-sumi" onclick="document.getElementById('imp-file').click()">Importar Datos</button>
   <input type="file" id="imp-file" accept=".json" style="display:none" onchange="importData(event)">
   <div style="height:30px"></div>
-  <button class="btn-shu" onclick="resetApp()">Borrar Todo</button>
+  <button class="btn-shu" onclick="confirmAction('¿Borrar todos los datos?<br><span style=font-size:11px;opacity:0.6>Esta acción no se puede deshacer. Exporta primero si quieres conservar una copia.</span>', resetApp)">Borrar Todo</button>
 </div>
 ```
 
@@ -402,10 +424,25 @@ select.f-inp { cursor: pointer; }
     <h3 id="tx-title" class="sheet-title">新記録</h3>
     <input type="number" id="f-amt" class="f-inp" placeholder="0.00" inputmode="decimal" step="0.01">
     <input type="text" id="f-payee" class="f-inp" placeholder="Concepto">
-    <select id="f-cat" class="f-inp"></select>
-    <div id="tx-create-box" style="display:flex;gap:12px;">
-      <button class="btn-sumi" style="flex:1" onclick="saveTx('income')">Ingreso</button>
-      <button class="btn-expense" style="flex:1" onclick="saveTx('expense')">Gasto</button>
+    <span class="f-label">Fecha</span>
+    <input type="date" id="f-date" class="f-inp">
+    <div id="f-cat-wrap">
+      <select id="f-cat" class="f-inp"></select>
+    </div>
+    <div id="tx-create-box">
+      <div class="tx-btn-row">
+        <button class="btn-sumi" onclick="saveTx('income')">Ingreso</button>
+        <button class="btn-expense" onclick="saveTx('expense')">Gasto</button>
+      </div>
+      <div class="tx-adjust-row">
+        <div class="adjust-sign-row" id="adjust-sign-toggle">
+          <button class="adjust-sign-btn active-pos" id="adj-pos" onclick="setAdjustSign(1)">＋ Sumar</button>
+          <div class="adjust-sign-sep"></div>
+          <button class="adjust-sign-btn" id="adj-neg" onclick="setAdjustSign(-1)">− Restar</button>
+        </div>
+        <button class="btn-adjust" onclick="saveTx('adjustment')">調整 Ajuste</button>
+      </div>
+      <p class="tx-adjust-hint">Saldo inicial o corrección — no cuenta como ingreso ni gasto</p>
     </div>
     <div id="tx-edit-box" style="display:none;flex-direction:column;gap:10px;">
       <button class="btn-sumi" onclick="updateTx()">Guardar</button>
@@ -546,12 +583,22 @@ select.f-inp { cursor: pointer; }
   </div>
 </div>
 
+<div class="overlay" id="ov-confirm" onclick="closeConfirm()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <h3 class="sheet-title" id="confirm-title">確認</h3>
+    <p id="confirm-msg" style="font-size:14px;line-height:1.6;margin-bottom:24px;"></p>
+    <button class="btn-shu" id="confirm-yes" style="margin-bottom:10px;">Confirmar</button>
+    <button class="btn-outline" id="confirm-cancel" onclick="closeConfirm()">Cancelar</button>
+  </div>
+</div>
+
 <script>
 'use strict';
 
 let DB = { groups: [], txs: [], assignments: {}, goals: [] };
 let curMonth = new Date();
 let activeCatId = null, activeGroupId = null, activeTxId = null, activeGoalId = null;
+let adjustSign = 1; // 1 = positive, -1 = negative
 
 /* ─── INIT ─── */
 function init() {
@@ -568,6 +615,17 @@ function init() {
         if (!g.mode) g.mode = g.cid ? 'linked' : 'manual';
         if (g.mode === 'manual' && g.saved === undefined) g.saved = 0;
       });
+      // Migration: ensure all assignment keys are zero-padded (YYYY-MM)
+      const fixedAssignments = {};
+      Object.keys(DB.assignments).forEach(k => {
+        const parts = k.split('-');
+        const fixed = parts[0] + '-' + String(parseInt(parts[1])).padStart(2, '0');
+        if (!fixedAssignments[fixed]) fixedAssignments[fixed] = {};
+        Object.keys(DB.assignments[k]).forEach(cid => {
+          fixedAssignments[fixed][cid] = (fixedAssignments[fixed][cid] || 0) + DB.assignments[k][cid];
+        });
+      });
+      DB.assignments = fixedAssignments;
     } else {
       DB.groups = [
         { id: 'g1', name: 'Esenciales', cats: [
@@ -589,6 +647,57 @@ function save() {
   catch (e) { console.error('Error saving:', e); }
 }
 
+/* ─── HELPERS ─── */
+function findCat(id) {
+  for (const g of DB.groups) { const c = g.cats.find(x => x.id === id); if (c) return c; }
+  return null;
+}
+
+function fmt(n) { return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n); }
+
+/** Always returns YYYY-MM with zero-padded month */
+function getMk(d) {
+  if (typeof d === 'string') {
+    // Handle date strings like "2025-03-04"
+    const parts = d.split('-');
+    return parts[0] + '-' + String(parseInt(parts[1])).padStart(2, '0');
+  }
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+}
+
+/** Get the first day of curMonth as YYYY-MM-DD for date input default */
+function getCurMonthDateDefault() {
+  const today = new Date();
+  const viewMk = getMk(curMonth);
+  const todayMk = getMk(today);
+  // If viewing current month, default to today. Otherwise, first of that month.
+  if (viewMk === todayMk) return today.toISOString().split('T')[0];
+  return viewMk + '-01';
+}
+
+function changeMonth(n) {
+  const newDate = new Date(curMonth);
+  newDate.setMonth(newDate.getMonth() + n);
+  curMonth = newDate;
+  updateUI();
+}
+
+function esc(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function populateCatSelect(selectEl, includeNone) {
+  let o = includeNone ? '<option value="">(Sin categoría)</option>' : '';
+  o += DB.groups.map(g =>
+    `<optgroup label="${esc(g.name)}">${g.cats.map(c =>
+      `<option value="${c.id}">${c.emoji} ${esc(c.name)}</option>`
+    ).join('')}</optgroup>`
+  ).join('');
+  selectEl.innerHTML = o;
+}
+
 /* ─── AGE OF MONEY ─── */
 function getAge() {
   const spent = DB.txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amt, 0);
@@ -600,21 +709,65 @@ function getAge() {
   return Math.max(0, Math.floor((new Date() - bday) / (1000 * 60 * 60 * 24)));
 }
 
-/* ─── CORE CALCULATIONS ─── */
+/* ─── CORE YNAB CALCULATIONS ─── */
+/**
+ * YNAB "To Be Assigned" (formerly "To Be Budgeted"):
+ * = Total income (all time up to this month)
+ * + Total adjustments (all time up to this month)
+ * − Total assigned/budgeted (all time up to this month)
+ *
+ * This is a CUMULATIVE number. It tells you how much money you have
+ * that hasn't been given a job yet.
+ */
 function getToAssign(md) {
   const mk = getMk(md);
-  const tI = DB.txs.filter(t => t.type === 'income' && getMk(new Date(t.date)) <= mk).reduce((s, t) => s + t.amt, 0);
-  let tA = 0;
-  Object.keys(DB.assignments).forEach(m => { if (m <= mk) Object.values(DB.assignments[m]).forEach(v => tA += v); });
-  return tI - tA;
+
+  // Sum all income + adjustments up to and including this month
+  let totalInflow = 0;
+  DB.txs.forEach(t => {
+    const txMk = getMk(t.date);
+    if (txMk > mk) return; // future month, skip
+    if (t.type === 'income') totalInflow += t.amt;
+    else if (t.type === 'adjustment') totalInflow += t.amt; // can be negative
+  });
+
+  // Sum all assignments up to and including this month
+  let totalAssigned = 0;
+  Object.keys(DB.assignments).forEach(m => {
+    if (m > mk) return;
+    Object.values(DB.assignments[m]).forEach(v => totalAssigned += v);
+  });
+
+  return totalInflow - totalAssigned;
 }
 
+/**
+ * YNAB "Available" for a category:
+ * = Total assigned to this category (all time up to this month)
+ * − Total spent in this category (all time up to this month)
+ *
+ * This rolls over month to month. If you assigned 100 in Jan and
+ * spent 60 in Feb, available in Feb = 100 - 60 = 40.
+ */
 function getAvail(cid, md) {
   const mk = getMk(md);
-  let tA = 0;
-  Object.keys(DB.assignments).forEach(m => { if (m <= mk) tA += (DB.assignments[m][cid] || 0); });
-  const tE = DB.txs.filter(t => t.cat === cid && t.type === 'expense' && getMk(new Date(t.date)) <= mk).reduce((s, t) => s + t.amt, 0);
-  return tA - tE;
+
+  // Sum all assignments to this category up to this month
+  let totalAssigned = 0;
+  Object.keys(DB.assignments).forEach(m => {
+    if (m > mk) return;
+    totalAssigned += (DB.assignments[m][cid] || 0);
+  });
+
+  // Sum all expenses in this category up to this month
+  let totalSpent = 0;
+  DB.txs.forEach(t => {
+    if (t.type !== 'expense' || t.cat !== cid) return;
+    if (getMk(t.date) > mk) return;
+    totalSpent += t.amt;
+  });
+
+  return totalAssigned - totalSpent;
 }
 
 /** Get goal progress amount */
@@ -622,7 +775,6 @@ function getGoalProgress(g) {
   if (g.mode === 'manual') {
     return Math.max(0, g.saved || 0);
   }
-  // Linked mode
   if (!g.cid) return 0;
   const cat = findCat(g.cid);
   if (!cat) return 0;
@@ -640,8 +792,7 @@ function getMonthsRemaining(dateStr) {
   const deadline = new Date(dateStr);
   if (isNaN(deadline.getTime())) return null;
   const now = new Date();
-  const months = (deadline.getFullYear() - now.getFullYear()) * 12 + (deadline.getMonth() - now.getMonth());
-  return months;
+  return (deadline.getFullYear() - now.getFullYear()) * 12 + (deadline.getMonth() - now.getMonth());
 }
 
 /* ─── UI UPDATE ─── */
@@ -674,6 +825,7 @@ function renderBudget() {
       </div>
       ${g.cats.map(c => {
         const av = getAvail(c.id, curMonth);
+        const assigned = DB.assignments[mk]?.[c.id] || 0;
         const linkedGoal = findGoalByCat(c.id);
         const goalBadge = linkedGoal ? `<span class="cat-goal-badge">🎯 ${esc(linkedGoal.name)}</span>` : '';
         return `
@@ -682,8 +834,8 @@ function renderBudget() {
               <span class="cat-emoji">${c.emoji}</span>
               <span class="cat-label">${esc(c.name)}${goalBadge}</span>
             </div>
-            <div class="cat-assigned" onclick="event.stopPropagation();openAssignCat('${c.id}')">${fmt(DB.assignments[mk]?.[c.id] || 0)}</div>
-            <div class="cat-available ${av < 0 ? 'neg' : 'pos'}">${fmt(av)}</div>
+            <div class="cat-assigned" onclick="event.stopPropagation();openAssignCat('${c.id}')">${fmt(assigned)}</div>
+            <div class="cat-available ${av < -0.004 ? 'neg' : 'pos'}">${fmt(av)}</div>
           </div>
         `;
       }).join('')}
@@ -696,21 +848,39 @@ function renderBudget() {
 /* ─── RENDER: TRANSACTIONS ─── */
 function renderTxs() {
   const mk = getMk(curMonth);
-  const filtered = DB.txs.filter(t => getMk(new Date(t.date)) === mk).sort((a, b) => new Date(b.date) - new Date(a.date));
+  const filtered = DB.txs.filter(t => t.type !== 'adjustment' && getMk(t.date) === mk).sort((a, b) => {
+    // Sort by date desc, then by id desc for same date
+    const da = new Date(a.date), db = new Date(b.date);
+    if (db - da !== 0) return db - da;
+    return b.id - a.id;
+  });
   const container = document.getElementById('tx-content');
   if (!filtered.length) {
     container.innerHTML = '<p class="empty-scroll">白紙 — Papel en blanco.</p>';
     return;
   }
   container.innerHTML = filtered.map(t => {
-    const catName = t.cat ? (findCat(t.cat)?.name || 'Sin categoría') : 'Ingreso';
+    let catName, amtClass, amtPrefix;
+    if (t.type === 'adjustment') {
+      catName = '調整 Ajuste';
+      amtClass = 'adj';
+      amtPrefix = t.amt >= 0 ? '+' : '';
+    } else if (t.type === 'expense') {
+      catName = t.cat ? (findCat(t.cat)?.name || 'Sin categoría') : 'Sin categoría';
+      amtClass = 'neg';
+      amtPrefix = '−';
+    } else {
+      catName = 'Ingreso';
+      amtClass = 'pos';
+      amtPrefix = '+';
+    }
     return `
       <div class="tx-entry" onclick="openEditTx('${t.id}')">
         <div class="tx-details">
           <div class="tx-payee">${esc(t.payee || 'Sin concepto')}</div>
           <div class="tx-meta">${esc(catName)} · ${t.date}</div>
         </div>
-        <div class="tx-amount ${t.type === 'expense' ? 'neg' : 'pos'}">${t.type === 'expense' ? '−' : '+'}${fmt(t.amt)}</div>
+        <div class="tx-amount ${amtClass}">${amtPrefix}${fmt(Math.abs(t.amt))}</div>
       </div>
     `;
   }).join('');
@@ -729,7 +899,6 @@ function renderGoals() {
     const pctClamped = Math.min(100, pctValue).toFixed(1);
     const isComplete = pctValue >= 100;
 
-    // Link label
     let linkLabel, linkClass = '';
     if (g.mode === 'manual') {
       linkLabel = '手動 Depósitos manuales';
@@ -738,7 +907,7 @@ function renderGoals() {
       if (cat) {
         linkLabel = '🔗 ' + esc(cat.name);
       } else {
-        linkLabel = '⚠ Categoría eliminada — editar para revincular';
+        linkLabel = '⚠ Categoría eliminada';
         linkClass = ' warn';
       }
     } else {
@@ -746,9 +915,7 @@ function renderGoals() {
       linkClass = ' warn';
     }
 
-    // Deadline
-    let dateHtml = '';
-    let monthlyHint = '';
+    let dateHtml = '', monthlyHint = '';
     if (g.date) {
       const d = new Date(g.date);
       if (!isNaN(d.getTime())) {
@@ -756,8 +923,6 @@ function renderGoals() {
         const isOverdue = monthsLeft !== null && monthsLeft < 0;
         const deadlineClass = isOverdue ? ' overdue' : '';
         dateHtml = `<div class="goal-deadline${deadlineClass}">${isOverdue ? '⚠ VENCIDA · ' : 'Límite: '}${d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' }).toUpperCase()}</div>`;
-
-        // Monthly target hint
         if (!isComplete && monthsLeft > 0) {
           const remaining = Math.max(0, g.target - progress);
           const monthly = remaining / monthsLeft;
@@ -766,7 +931,6 @@ function renderGoals() {
       }
     }
 
-    // Action button for manual goals
     const depositBtn = g.mode === 'manual' && !isComplete
       ? `<div style="margin-top:8px;text-align:right;"><span style="font-size:10px;opacity:0.4;cursor:pointer;text-decoration:underline;" onclick="event.stopPropagation();openGoalDeposit('${g.id}')">Depositar / Retirar</span></div>`
       : '';
@@ -798,10 +962,12 @@ function renderGoals() {
 
 function updatePills() {
   const mk = getMk(curMonth);
-  const inc = DB.txs.filter(t => t.type === 'income' && getMk(new Date(t.date)) === mk).reduce((s, t) => s + t.amt, 0);
-  const exp = DB.txs.filter(t => t.type === 'expense' && getMk(new Date(t.date)) === mk).reduce((s, t) => s + t.amt, 0);
+  const inc = DB.txs.filter(t => t.type === 'income' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
+  const exp = DB.txs.filter(t => t.type === 'expense' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
+  const adj = DB.txs.filter(t => t.type === 'adjustment' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
   const asig = Object.values(DB.assignments[mk] || {}).reduce((s, v) => s + v, 0);
-  document.getElementById('p-inc').innerText = fmt(inc);
+  // Show income + adjustments together in the "Ingresos" pill for clarity
+  document.getElementById('p-inc').innerText = fmt(inc + adj);
   document.getElementById('p-exp').innerText = fmt(exp);
   document.getElementById('p-asg').innerText = fmt(asig);
 }
@@ -816,13 +982,24 @@ function nav(e, p) {
 }
 
 /* ─── TRANSACTIONS ─── */
+function setAdjustSign(sign) {
+  adjustSign = sign;
+  const posBtn = document.getElementById('adj-pos');
+  const negBtn = document.getElementById('adj-neg');
+  posBtn.className = 'adjust-sign-btn' + (sign === 1 ? ' active-pos' : '');
+  negBtn.className = 'adjust-sign-btn' + (sign === -1 ? ' active-neg' : '');
+}
+
 function openNewTx() {
   activeTxId = null;
   document.getElementById('tx-title').innerText = '新記録 Nuevo Registro';
   document.getElementById('f-amt').value = '';
   document.getElementById('f-payee').value = '';
-  document.getElementById('tx-create-box').style.display = 'flex';
+  document.getElementById('f-date').value = getCurMonthDateDefault();
+  document.getElementById('f-cat-wrap').style.display = 'block';
+  document.getElementById('tx-create-box').style.display = 'block';
   document.getElementById('tx-edit-box').style.display = 'none';
+  setAdjustSign(1);
   openSheet('tx');
 }
 
@@ -831,23 +1008,45 @@ function openEditTx(id) {
   const t = DB.txs.find(x => String(x.id) === String(id));
   if (!t) return;
   document.getElementById('tx-title').innerText = '編集 Editar';
-  document.getElementById('f-amt').value = t.amt;
+  document.getElementById('f-amt').value = t.type === 'adjustment' ? Math.abs(t.amt) : t.amt;
   document.getElementById('f-payee').value = t.payee;
+  document.getElementById('f-date').value = t.date;
+  document.getElementById('f-cat-wrap').style.display = t.type === 'adjustment' ? 'none' : 'block';
   document.getElementById('tx-create-box').style.display = 'none';
   document.getElementById('tx-edit-box').style.display = 'flex';
+  // Set adjust sign for adjustments being edited
+  if (t.type === 'adjustment') {
+    setAdjustSign(t.amt >= 0 ? 1 : -1);
+  }
   openSheet('tx');
-  document.getElementById('f-cat').value = t.cat || '';
+  if (t.type !== 'adjustment') {
+    document.getElementById('f-cat').value = t.cat || '';
+  }
 }
 
 function saveTx(type) {
-  const a = parseFloat(document.getElementById('f-amt').value);
-  if (!a || isNaN(a) || a <= 0) return;
-  DB.txs.push({
-    id: Date.now(), amt: a, type,
-    cat: document.getElementById('f-cat').value,
-    payee: document.getElementById('f-payee').value.trim(),
-    date: new Date().toISOString().split('T')[0]
-  });
+  const rawAmt = parseFloat(document.getElementById('f-amt').value);
+  if (isNaN(rawAmt) || rawAmt <= 0) return;
+  const date = document.getElementById('f-date').value;
+  if (!date) return;
+
+  if (type === 'adjustment') {
+    DB.txs.push({
+      id: Date.now(),
+      amt: rawAmt * adjustSign,
+      type: 'adjustment',
+      cat: '',
+      payee: document.getElementById('f-payee').value.trim() || 'Ajuste de saldo',
+      date: date
+    });
+  } else {
+    DB.txs.push({
+      id: Date.now(), amt: rawAmt, type,
+      cat: type === 'expense' ? document.getElementById('f-cat').value : '',
+      payee: document.getElementById('f-payee').value.trim(),
+      date: date
+    });
+  }
   closeSheet(); updateUI();
 }
 
@@ -855,18 +1054,28 @@ function updateTx() {
   const t = DB.txs.find(x => String(x.id) === String(activeTxId));
   if (!t) return;
   const newAmt = parseFloat(document.getElementById('f-amt').value);
-  if (!newAmt || isNaN(newAmt) || newAmt <= 0) return;
-  t.amt = newAmt;
+  if (isNaN(newAmt) || newAmt <= 0) return;
+  const newDate = document.getElementById('f-date').value;
+  if (!newDate) return;
+
+  if (t.type === 'adjustment') {
+    t.amt = newAmt * (t.amt >= 0 ? 1 : -1); // preserve original sign
+  } else {
+    t.amt = newAmt;
+    if (t.type === 'expense') {
+      t.cat = document.getElementById('f-cat').value;
+    }
+  }
   t.payee = document.getElementById('f-payee').value.trim();
-  t.cat = document.getElementById('f-cat').value;
+  t.date = newDate;
   closeSheet(); updateUI();
 }
 
 function deleteTx() {
-  if (confirm('¿Borrar este registro?')) {
+  confirmAction('¿Borrar este registro?', function() {
     DB.txs = DB.txs.filter(x => String(x.id) !== String(activeTxId));
     closeSheet(); updateUI();
-  }
+  });
 }
 
 /* ─── GOALS ─── */
@@ -912,12 +1121,11 @@ function saveGoal() {
   const date = document.getElementById('n-l-date').value;
   if (!name || !target || isNaN(target) || target <= 0) return;
 
-  // Validate linked mode
   if (mode === 'linked') {
-    if (!cid) { alert('Selecciona una categoría para vincular.'); return; }
+    if (!cid) { showAlert('Selecciona una categoría para vincular.'); return; }
     const existing = findGoalByCat(cid);
     if (existing) {
-      alert(`La categoría ya está vinculada a la meta "${existing.name}". Cada categoría solo puede tener una meta.`);
+      showAlert(`La categoría ya está vinculada a la meta "${existing.name}".`);
       return;
     }
   }
@@ -940,17 +1148,15 @@ function updateGoal() {
   const cid = document.getElementById('n-l-cat').value;
   if (!name || !target || isNaN(target) || target <= 0) return;
 
-  // Validate linked mode — allow same category if it's the same goal
   if (mode === 'linked') {
-    if (!cid) { alert('Selecciona una categoría para vincular.'); return; }
+    if (!cid) { showAlert('Selecciona una categoría para vincular.'); return; }
     const existing = findGoalByCat(cid);
     if (existing && String(existing.id) !== String(activeGoalId)) {
-      alert(`La categoría ya está vinculada a la meta "${existing.name}".`);
+      showAlert(`La categoría ya está vinculada a la meta "${existing.name}".`);
       return;
     }
   }
 
-  // If switching from manual to linked, clear saved
   const oldMode = g.mode;
   g.name = name;
   g.target = target;
@@ -964,10 +1170,10 @@ function updateGoal() {
 }
 
 function deleteGoalAction() {
-  if (confirm('¿Eliminar esta meta?')) {
+  confirmAction('¿Eliminar esta meta?', function() {
     DB.goals = DB.goals.filter(x => String(x.id) !== String(activeGoalId));
     closeSheet(); updateUI();
-  }
+  });
 }
 
 /* ─── GOAL DEPOSITS (manual mode) ─── */
@@ -1009,19 +1215,18 @@ function updateGroup() {
 }
 
 function deleteGroup() {
-  if (confirm('¿Eliminar este grupo y todas sus categorías?')) {
-    // Warn about linked goals
-    const catIds = (DB.groups.find(x => x.id === activeGroupId)?.cats || []).map(c => c.id);
-    const affectedGoals = DB.goals.filter(g => g.mode === 'linked' && catIds.includes(g.cid));
-    if (affectedGoals.length > 0) {
-      const names = affectedGoals.map(g => g.name).join(', ');
-      if (!confirm(`Las metas vinculadas "${names}" perderán su vínculo. ¿Continuar?`)) return;
-      // Unlink affected goals
-      affectedGoals.forEach(g => { g.cid = ''; });
-    }
+  const catIds = (DB.groups.find(x => x.id === activeGroupId)?.cats || []).map(c => c.id);
+  const affectedGoals = DB.goals.filter(g => g.mode === 'linked' && catIds.includes(g.cid));
+  let msg = '¿Eliminar este grupo y todas sus categorías?';
+  if (affectedGoals.length > 0) {
+    const names = affectedGoals.map(g => g.name).join(', ');
+    msg += `<br><br><span style="font-size:11px;opacity:0.6">Las metas vinculadas "${names}" perderán su vínculo.</span>`;
+  }
+  confirmAction(msg, function() {
+    affectedGoals.forEach(g => { g.cid = ''; });
     DB.groups = DB.groups.filter(x => x.id !== activeGroupId);
     closeSheet(); updateUI();
-  }
+  });
 }
 
 function addGroup() {
@@ -1055,7 +1260,6 @@ function openEditCat(id) {
   if (!c) return;
   document.getElementById('e-c-name').value = c.name;
   document.getElementById('e-c-emoji').value = c.emoji;
-  // Show linked goal info
   const linkedGoal = findGoalByCat(id);
   const infoEl = document.getElementById('cat-goal-info');
   if (linkedGoal) {
@@ -1078,22 +1282,20 @@ function updateCat() {
 }
 
 function deleteCat() {
-  // Check for linked goals before deleting
   const linkedGoal = findGoalByCat(activeCatId);
   let msg = '¿Borrar categoría?';
   if (linkedGoal) {
-    msg = `Esta categoría está vinculada a la meta "${linkedGoal.name}". Al borrarla, la meta perderá su vínculo. ¿Continuar?`;
+    msg = `¿Borrar categoría?<br><br><span style="font-size:11px;opacity:0.6">La meta "${linkedGoal.name}" perderá su vínculo.</span>`;
   }
-  if (confirm(msg)) {
-    // Unlink any goal tied to this category
+  confirmAction(msg, function() {
     if (linkedGoal) { linkedGoal.cid = ''; }
     DB.groups.forEach(g => g.cats = g.cats.filter(x => x.id !== activeCatId));
     closeSheet(); updateUI();
-  }
+  });
 }
 
 /* ─── ASSIGN ─── */
-let assignMode = 'set'; // 'set' or 'add'
+let assignMode = 'set';
 let assignCatId = null;
 
 function setAssignMode(mode) {
@@ -1113,12 +1315,12 @@ function openAssignCat(cid) {
   const mk = getMk(curMonth);
   const currentAssign = DB.assignments[mk]?.[cid] || 0;
   const avail = getAvail(cid, curMonth);
-  const spent = DB.txs.filter(t => t.cat === cid && t.type === 'expense' && getMk(new Date(t.date)) === mk).reduce((s, t) => s + t.amt, 0);
+  const spent = DB.txs.filter(t => t.cat === cid && t.type === 'expense' && getMk(t.date) === mk).reduce((s, t) => s + t.amt, 0);
 
   document.getElementById('ac-cat-name').innerText = cat.emoji + ' ' + cat.name;
   document.getElementById('ac-current').innerText = fmt(currentAssign);
   document.getElementById('ac-avail').innerText = fmt(avail);
-  document.getElementById('ac-avail').className = 'assign-info-value' + (avail < 0 ? ' neg' : '');
+  document.getElementById('ac-avail').className = 'assign-info-value' + (avail < -0.004 ? ' neg' : '');
   document.getElementById('ac-spent').innerText = fmt(spent);
   document.getElementById('ac-amt').value = '';
   setAssignMode('set');
@@ -1132,17 +1334,14 @@ function confirmAssignCat() {
   if (!DB.assignments[mk]) DB.assignments[mk] = {};
 
   if (assignMode === 'set') {
-    // Set the exact value (allow 0 to clear)
     if (val < 0) return;
     DB.assignments[mk][assignCatId] = val;
   } else {
-    // Add/subtract from current
     DB.assignments[mk][assignCatId] = (DB.assignments[mk][assignCatId] || 0) + val;
   }
   closeSheet(); updateUI();
 }
 
-// Quick assign from "Disponible" button — generic category picker
 function confirmAssign() {
   const cid = document.getElementById('a-cat').value;
   const a = parseFloat(document.getElementById('a-amt').value);
@@ -1153,38 +1352,7 @@ function confirmAssign() {
   closeSheet(); updateUI();
 }
 
-/* ─── HELPERS ─── */
-function findCat(id) {
-  for (const g of DB.groups) { const c = g.cats.find(x => x.id === id); if (c) return c; }
-  return null;
-}
-
-function fmt(n) { return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR' }).format(n); }
-function getMk(d) { return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; }
-
-function changeMonth(n) {
-  const newDate = new Date(curMonth);
-  newDate.setMonth(newDate.getMonth() + n);
-  curMonth = newDate;
-  updateUI();
-}
-
-function esc(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function populateCatSelect(selectEl, includeNone) {
-  let o = includeNone ? '<option value="">(Ninguno)</option>' : '';
-  o += DB.groups.map(g =>
-    `<optgroup label="${esc(g.name)}">${g.cats.map(c =>
-      `<option value="${c.id}">${c.emoji} ${esc(c.name)}</option>`
-    ).join('')}</optgroup>`
-  ).join('');
-  selectEl.innerHTML = o;
-}
-
+/* ─── SHEETS ─── */
 function openSheet(id) {
   if (id === 'tx') populateCatSelect(document.getElementById('f-cat'), true);
   if (id === 'goal') populateCatSelect(document.getElementById('n-l-cat'), false);
@@ -1204,12 +1372,66 @@ function closeSheet() {
   document.querySelectorAll('.overlay').forEach(o => o.classList.remove('open'));
 }
 
+/* ─── CUSTOM CONFIRM MODAL ─── */
+let confirmCallback = null;
+
+function confirmAction(msg, callback) {
+  confirmCallback = callback;
+  document.getElementById('confirm-msg').innerHTML = msg;
+  const yesBtn = document.getElementById('confirm-yes');
+  const cancelBtn = document.getElementById('confirm-cancel');
+  yesBtn.style.display = 'block';
+  cancelBtn.textContent = 'Cancelar';
+  cancelBtn.style.display = 'block';
+  yesBtn.onclick = function() {
+    closeConfirm();
+    if (confirmCallback) confirmCallback();
+    confirmCallback = null;
+  };
+  document.getElementById('ov-confirm').classList.add('open');
+}
+
+function showAlert(msg) {
+  document.getElementById('confirm-msg').innerHTML = msg;
+  document.getElementById('confirm-yes').style.display = 'none';
+  document.getElementById('confirm-cancel').textContent = 'Cerrar';
+  document.getElementById('confirm-cancel').style.display = 'block';
+  document.getElementById('ov-confirm').classList.add('open');
+}
+
+function closeConfirm() {
+  document.getElementById('ov-confirm').classList.remove('open');
+  confirmCallback = null;
+}
+
+/* ─── IMPORT / EXPORT ─── */
 function exportData() {
-  const b = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
-  const u = URL.createObjectURL(b);
-  const a = document.createElement('a'); a.href = u;
-  a.download = 'ma_budget_' + getMk(new Date()) + '.json';
-  a.click(); URL.revokeObjectURL(u);
+  try {
+    const json = JSON.stringify(DB, null, 2);
+    const filename = 'ma_budget.json';
+
+    // Try Web Share API (iOS / mobile)
+    if (navigator.share && navigator.canShare) {
+      const file = new File([json], filename, { type: 'application/octet-stream' });
+      if (navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file] }).catch(function() {});
+        return;
+      }
+    }
+
+    // Fallback: classic download
+    const b = new Blob([json], { type: 'application/json' });
+    const u = URL.createObjectURL(b);
+    const a = document.createElement('a');
+    a.href = u;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(u);
+  } catch (e) {
+    showAlert('Error al exportar: ' + e.message);
+  }
 }
 
 function importData(ev) {
@@ -1220,19 +1442,29 @@ function importData(ev) {
     try {
       const parsed = JSON.parse(e.target.result);
       if (!parsed.groups || !Array.isArray(parsed.groups) || !parsed.txs || !Array.isArray(parsed.txs)) {
-        alert('El archivo no tiene un formato válido de Ma Budget.'); return;
+        showAlert('El archivo no tiene un formato válido de Ma Budget.'); return;
       }
       if (!parsed.assignments || typeof parsed.assignments !== 'object') parsed.assignments = {};
       if (!parsed.goals || !Array.isArray(parsed.goals)) parsed.goals = [];
-      // Migration
       parsed.goals.forEach(g => {
         if (!g.mode) g.mode = g.cid ? 'linked' : 'manual';
         if (g.mode === 'manual' && g.saved === undefined) g.saved = 0;
       });
+      // Fix assignment keys on import
+      const fixedAssignments = {};
+      Object.keys(parsed.assignments).forEach(k => {
+        const parts = k.split('-');
+        const fixed = parts[0] + '-' + String(parseInt(parts[1])).padStart(2, '0');
+        if (!fixedAssignments[fixed]) fixedAssignments[fixed] = {};
+        Object.keys(parsed.assignments[k]).forEach(cid => {
+          fixedAssignments[fixed][cid] = (fixedAssignments[fixed][cid] || 0) + parsed.assignments[k][cid];
+        });
+      });
+      parsed.assignments = fixedAssignments;
       DB = parsed;
       save(); updateUI();
-      alert('Datos importados correctamente.');
-    } catch (err) { alert('Error al leer el archivo: ' + err.message); }
+      showAlert('✓ Datos importados correctamente.');
+    } catch (err) { showAlert('Error al leer el archivo: ' + err.message); }
   };
   r.readAsText(f);
   ev.target.value = '';
@@ -1240,17 +1472,15 @@ function importData(ev) {
 
 function registerSW() {
   if ('serviceWorker' in navigator) {
-    const sw = `const C='ma-v13';self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['./']))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+    const sw = `const C='ma-v15';self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(C).then(c=>c.addAll(['./'])))});self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==C).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>e.respondWith(fetch(e.request).catch(()=>caches.match(e.request))));`;
     const b = new Blob([sw], { type: 'text/javascript' });
     navigator.serviceWorker.register(URL.createObjectURL(b)).catch(() => {});
   }
 }
 
 function resetApp() {
-  if (confirm('¿Borrar todo? Esta acción no se puede deshacer.')) {
-    localStorage.removeItem('ma_pergamino_v8');
-    location.reload();
-  }
+  localStorage.removeItem('ma_pergamino_v8');
+  location.reload();
 }
 
 window.onload = init;
