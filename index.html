@@ -185,22 +185,26 @@ body::after {
 .trip-value { font-family: 'Zen Old Mincho', serif; font-size: 14px; font-weight: 700; }
 .trip-value.expense-pill { color: var(--accent); }
 
-/* ─── AVAILABLE / TO ASSIGN ─── */
+/* ─── AVAILABLE / TOTAL MONEY ─── */
 .available-scroll {
   margin-bottom: 45px; padding: 28px 0;
-  position: relative; display: flex; justify-content: space-between; align-items: flex-end;
+  position: relative; display: flex; justify-content: space-between; align-items: flex-start;
 }
 .available-scroll::before { content: ''; position: absolute; top: 0; left: 0; width: 45px; height: 3px; background: linear-gradient(90deg, var(--kin), transparent); opacity: 0.6; }
 .available-scroll::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, var(--fg), transparent 80%); opacity: 0.08; }
-.av-label { font-size: 8px; letter-spacing: 3px; text-transform: uppercase; display: block; opacity: 0.4; margin-bottom: 10px; }
-#to-assign { font-family: 'Zen Old Mincho', serif; font-size: 38px; font-weight: 900; line-height: 1; cursor: pointer; letter-spacing: -1px; transition: color 0.3s; }
+
+.av-block { flex: 1; display: flex; flex-direction: column; }
+.av-block.right { align-items: flex-end; text-align: right; }
+
+.av-label { font-size: 8px; letter-spacing: 2px; text-transform: uppercase; display: block; opacity: 0.4; margin-bottom: 10px; }
+.av-value { font-family: 'Zen Old Mincho', serif; font-size: 28px; font-weight: 900; line-height: 1; letter-spacing: -1px; transition: color 0.3s; }
+
+#to-assign { cursor: pointer; }
 #to-assign:active { opacity: 0.5; }
 #to-assign.deficit { color: var(--accent); }
+#total-money { color: var(--kin); }
+
 .av-tap-hint { font-size: 7px; letter-spacing: 1.5px; text-transform: uppercase; display: block; margin-top: 8px; opacity: 0.15; }
-.age-block { text-align: right; opacity: 0.7; }
-#age-num { font-family: 'Zen Old Mincho', serif; font-size: 28px; font-weight: 900; line-height: 1; color: var(--kin); }
-.age-kanji { font-size: 7px; letter-spacing: 2px; display: block; margin-top: 4px; opacity: 0.5; text-transform: uppercase; }
-.age-sub { font-size: 6px; letter-spacing: 1.5px; display: block; margin-top: 2px; opacity: 0.25; text-transform: uppercase; }
 
 /* ─── PANELS ─── */
 .panel { display: none; }
@@ -438,7 +442,6 @@ select.f-inp { cursor: pointer; }
       </div>
     </header>
 
-```
 <div class="summary-triptych">
   <div class="trip-item"><span class="trip-label">Ingresos</span><div id="p-inc" class="trip-value">0 €</div></div>
   <div class="trip-item"><span class="trip-label">Asignado</span><div id="p-asg" class="trip-value">0 €</div></div>
@@ -446,15 +449,14 @@ select.f-inp { cursor: pointer; }
 </div>
 
 <div class="available-scroll">
-  <div>
-    <span class="av-label">Disponible para asignar</span>
-    <div id="to-assign" onclick="openSheet('assign')">0,00 €</div>
+  <div class="av-block">
+    <span class="av-label">Por Asignar</span>
+    <div id="to-assign" class="av-value" onclick="openSheet('assign')">0,00 €</div>
     <span class="av-tap-hint">Toca para asignar →</span>
   </div>
-  <div class="age-block">
-    <div id="age-num">0</div>
-    <span class="age-kanji">日の命</span>
-    <span class="age-sub">Edad del dinero</span>
+  <div class="av-block right">
+    <span class="av-label">Saldo Total</span>
+    <div id="total-money" class="av-value">0,00 €</div>
   </div>
 </div>
 
@@ -492,7 +494,6 @@ select.f-inp { cursor: pointer; }
     <div style="font-size:8px;letter-spacing:3px;text-transform:uppercase;margin-top:6px;">Ma Budget · v8</div>
   </div>
 </div>
-```
 
   </main>
 
@@ -587,7 +588,6 @@ select.f-inp { cursor: pointer; }
     <input type="text" id="n-l-name" class="f-inp" placeholder="Nombre de la meta" style="margin-top:10px;">
     <input type="number" id="n-l-target" class="f-inp" placeholder="Importe Objetivo (€)" step="0.01">
 
-```
 <div id="goal-edit-progress-wrap" style="display:none;margin-bottom:18px;padding:12px 0;border-bottom:1px solid var(--ink-wash);">
   <span class="f-label">Progreso actual</span>
   <div id="goal-edit-progress" style="font-size:14px;margin-top:4px;"></div>
@@ -615,7 +615,6 @@ select.f-inp { cursor: pointer; }
   <button class="btn-sumi" onclick="updateGoal()">Guardar Cambios</button>
   <button class="btn-shu" onclick="deleteGoalAction()">Eliminar Meta</button>
 </div>
-```
 
   </div>
 </div>
@@ -866,18 +865,21 @@ function populateCatSelect(selectEl, includeNone) {
   selectEl.innerHTML = o;
 }
 
-/* ─── AGE OF MONEY ─── */
-function getAge() {
-  const spent = DB.txs.filter(t => t.type === 'expense').reduce((s, t) => s + t.amt, 0);
-  const incs = DB.txs.filter(t => t.type === 'income').sort((a, b) => new Date(a.date) - new Date(b.date));
-  if (!incs.length || spent <= 0) return 0;
-  let cum = 0, bday = null;
-  for (const i of incs) { cum += i.amt; if (cum > spent) { bday = new Date(i.date); break; } }
-  if (!bday) return 0;
-  return Math.max(0, Math.floor((new Date() - bday) / (1000 * 60 * 60 * 24)));
+/* ─── CORE YNAB CALCULATIONS ─── */
+
+/**
+ * Total de dinero real en todas las cuentas a lo largo de la historia
+ */
+function getTotalMoney() {
+  let total = 0;
+  DB.txs.forEach(t => {
+    if (t.type === 'income') total += t.amt;
+    else if (t.type === 'expense') total -= t.amt;
+    else if (t.type === 'adjustment') total += t.amt;
+  });
+  return total;
 }
 
-/* ─── CORE YNAB CALCULATIONS ─── */
 /**
  * YNAB "To Be Assigned" (formerly "To Be Budgeted"):
  * = Total income (all time up to this month)
@@ -967,12 +969,14 @@ function getMonthsRemaining(dateStr) {
 function updateUI() {
   document.getElementById('month-display').innerText =
     curMonth.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }).toUpperCase();
-  document.getElementById('age-num').innerText = getAge();
 
   const ta = getToAssign(curMonth);
   const el = document.getElementById('to-assign');
   el.innerText = fmt(ta);
-  el.className = ta < -0.01 ? 'deficit' : '';
+  el.className = 'av-value' + (ta < -0.01 ? ' deficit' : '');
+
+  // Actualizar el saldo total nuevo
+  document.getElementById('total-money').innerText = fmt(getTotalMoney());
 
   renderBudget();
   renderTxs();
@@ -1733,3 +1737,5 @@ window.onload = init;
 
 </body>
 </html>
+
+
