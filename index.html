@@ -83,13 +83,13 @@ body::before {
 
 .nav-btn {
   background:none; border:none; color:var(--text-light);
-  font-family:'Noto Serif JP',serif; font-size:11px; font-weight:700;
-  letter-spacing:1px; cursor:pointer; text-transform:uppercase;
-  display:flex; flex-direction:column; align-items:center; gap:6px;
-  padding:8px 12px;
+  font-family:'Noto Serif JP',serif; font-size:9px; font-weight:700;
+  letter-spacing:0.5px; cursor:pointer; text-transform:uppercase;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:8px 2px; flex: 1; min-width: 0;
   transition:all 0.3s ease;
 }
-.nav-btn .nav-icon { font-size:22px; font-weight:400; transition:transform 0.3s; }
+.nav-btn .nav-icon { font-size:20px; font-weight:400; transition:transform 0.3s; }
 .nav-btn.on { color:var(--accent); }
 .nav-btn.on .nav-icon { transform:scale(1.1); font-weight:900; }
 .nav-btn:active { transform:scale(0.95); }
@@ -820,5 +820,6 @@ window.onload=init;
 
 </body>
 </html>
+
 
 
