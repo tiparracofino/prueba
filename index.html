@@ -139,6 +139,45 @@ body::before {
 }
 .month-pill button:active { color:var(--accent); transform:scale(0.8); }
 
+/* ─── HERO BENTO GRID ─── */
+.hero-bento {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  border: 2px solid var(--border);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 24px;
+  background: var(--bg-card);
+}
+.hero-main {
+  padding: 16px 12px;
+  border-right: 2px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+.hero-main:active { background: var(--bg); }
+.hero-main::after {
+  content:'家計簿'; position:absolute; right:8px; top:50%; transform:translateY(-50%);
+  font-size:48px; font-weight:900; color:var(--border); opacity:0.04; writing-mode:vertical-rl; pointer-events:none;
+}
+.hero-secondary {
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: var(--bg); /* Contraste sutil tipo Washi */
+}
+.hero-label { font-size:11px; font-weight:900; letter-spacing:1px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; display:flex; align-items:center; gap:6px;}
+.hero-value { font-size:36px; font-weight:900; line-height:1; color:var(--text-main); font-variant-numeric: tabular-nums; letter-spacing:-1px;}
+.hero-value.deficit { color:var(--accent); }
+.hero-value-sm { font-size:24px; font-weight:900; line-height:1; color:var(--text-main); font-variant-numeric: tabular-nums; margin-top:2px; letter-spacing:-0.5px;}
+
+
 /* ─── TARJETAS DE RESUMEN ─── */
 .summary-container {
   display:flex; background:var(--bg-card);
@@ -155,15 +194,6 @@ body::before {
 .sb-val { font-size:16px; font-weight:900; color:var(--text-main); font-variant-numeric: tabular-nums;}
 .sb-val.expense-color { color:var(--accent); }
 
-/* ─── HERO NUMBERS ─── */
-.hero-row { display:flex; flex-direction:column; align-items:center; text-align:center; margin-bottom:24px; padding:12px 0; position:relative;}
-.hero-row::after { content:'家計簿'; position:absolute; right:0; top:0; font-size:80px; font-weight:900; color:var(--border); opacity:0.04; writing-mode:vertical-rl; pointer-events:none; }
-.hero-label { font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px; }
-.hero-value { font-size:48px; font-weight:900; line-height:1; color:var(--text-main); font-variant-numeric: tabular-nums; letter-spacing:-1px;}
-#to-assign { cursor:pointer; transition:color 0.3s; }
-#to-assign:active { opacity:0.5; }
-#to-assign.deficit { color:var(--accent); }
-.hero-hint { font-size:11px; font-weight:700; color:var(--text-light); margin-top:12px; text-transform:uppercase; letter-spacing:1px;}
 
 /* ─── BUDGET LISTS ─── */
 .scroll-group { margin-bottom:32px; }
@@ -412,10 +442,19 @@ select.f-inp option { background:var(--bg-card); color:var(--text-main); }
         <button onclick="changeMonth(1)">▸</button>
       </div>
     </div>
-    <div class="hero-row">
-      <span class="hero-label">Por Asignar</span>
-      <div class="hero-value" id="to-assign" onclick="openSheet('assign')">0 €</div>
+    
+    <!-- NUEVO HERO BENTO GRID (Dinero Por Asignar + Dinero Total) -->
+    <div class="hero-bento">
+      <div class="hero-main" onclick="openSheet('assign')">
+        <span class="hero-label">Por Asignar <span style="font-size:10px; font-weight:500; text-transform:none; margin-left:4px;">(Tocar)</span></span>
+        <div class="hero-value" id="to-assign">0 €</div>
+      </div>
+      <div class="hero-secondary">
+        <span class="hero-label">Patrimonio</span>
+        <div class="hero-value-sm" id="total-money">0 €</div>
+      </div>
     </div>
+
     <div class="summary-container">
       <div class="summary-block"><span class="sb-label">Ingresos</span><span class="sb-val" id="p-inc">0 €</span></div>
       <div class="summary-block"><span class="sb-label">Asignado</span><span class="sb-val" id="p-asg">0 €</span></div>
@@ -666,6 +705,9 @@ function updateUI(panels = ['all']){
   
   const ta=getToAssign(curMonth),el=document.getElementById('to-assign');
   el.innerText=fmt(ta);el.className='hero-value'+(ta<-0.01?' deficit':'');
+  
+  const tm=document.getElementById('total-money');
+  if(tm) tm.innerText=fmt(getTotalMoney());
 
   if(panels.includes('all') || panels.includes('budget')) renderBudget();
   if(panels.includes('all') || panels.includes('accounts')) renderAccounts();
